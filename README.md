@@ -1,2 +1,0 @@
-# kvelte
-Svelte + Kotlin + Ktor
