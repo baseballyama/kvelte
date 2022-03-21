@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="17d6cdfc-fb77-446a-8f46-0d72eb49d6c8" name="変更" comment="">
-      <change beforePath="$PROJECT_DIR$/../examples/ktor/scripts/build.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../README-ja.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README-ja.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
