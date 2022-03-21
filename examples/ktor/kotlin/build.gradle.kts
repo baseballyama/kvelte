@@ -20,7 +20,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:1.6.7")
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.1")
-    implementation(files(listOf("/Users/baseballyama/Desktop/git/ksveltor/kvelte2/build/libs/kvelte-0.0.1.jar")))
+    implementation(files(listOf("/Users/baseballyama/Desktop/git/kvelte/kvelte/build/libs/kvelte-0.0.1.jar")))
 }
 
 tasks.named("run") {

@@ -1,10 +1,6 @@
 package tokyo.baseballyama.kvelte
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.nio.file.Paths
 
@@ -22,57 +18,64 @@ object Kvelte {
         this.rollupConfigFileWriter = RollupConfigFileWriter(this.svelteProjectDir!!, this.isProduction)
     }
 
+    private var enableSSR = true
+    fun setEnableSSR(enableSSR: Boolean) {
+        this.enableSSR = enableSSR
+    }
+
     private var isProduction = true
     fun setIsProduction(isProduction: Boolean) {
         this.isProduction = isProduction
         this.rollupConfigFileWriter = RollupConfigFileWriter(this.svelteProjectDir!!, this.isProduction)
     }
 
+    private var defaultLang = "en"
+    fun setDefaultLang(defaultLang: String) {
+        this.defaultLang = defaultLang
+    }
+
+    private var defaultTitle = "Hello Kvelte"
+    fun setDefaultTitle(defaultTitle: String) {
+        this.defaultTitle = defaultTitle
+    }
+
     private var rollupConfigFileWriter: RollupConfigFileWriter? = null
 
     private val svelteFileMap = mutableMapOf<String, String>()
 
-    fun load(lang: String, title: String, rootSvelteFilePath: String, props: Map<String, *>): String {
+    fun load(
+        lang: String = defaultLang,
+        title: String = defaultTitle,
+        rootSvelteFilePath: String,
+        props: Map<String, *>
+    ): String {
         if (svelteProjectDir == null) throw KvelteException("should set value to ${Kvelte::class.java.name}.${Kvelte::svelteProjectDir.name} before calling this method")
-        if (this.svelteFileMap.containsKey(rootSvelteFilePath)) return this.svelteFileMap[rootSvelteFilePath]!!.replace(
-            "__KVELTE_PROPS__",
-            jacksonObjectMapper().writeValueAsString(props)
-        )
 
-        return runBlocking {
-
+        // キャッシュが存在しない場合はSvelteファイルを読み込む
+        if (!this.svelteFileMap.containsKey(rootSvelteFilePath)) {
             // ssr
-            val ssrDeffer = async {
-                withContext(Dispatchers.IO) {
-                    println("ssr start")
-                    val ssrOutDir = this@Kvelte.rollupConfigFileWriter!!.write(rootSvelteFilePath, false)
-                    val ssr = SvelteBuilder.build(svelteProjectDir!!, ssrOutDir)
-                    this@Kvelte.rollupConfigFileWriter!!.restore()
-                    println("ssr end")
-                    Command.execute("node", ssr.js.absolutePath).stdout
-                }
-            }
+            val ssrHTML = if (enableSSR) {
+                val ssrOutDir = this.rollupConfigFileWriter!!.write(rootSvelteFilePath, false)
+                val ssr = SvelteBuilder.build(svelteProjectDir!!, ssrOutDir)
+                this.rollupConfigFileWriter!!.restore()
+                Command.execute("node", ssr.js.absolutePath).stdout
+            } else ""
 
             // dom
-            val domDeffer = async {
-                withContext(Dispatchers.IO) {
-                    println("dom start")
-                    val domOutDir = this@Kvelte.rollupConfigFileWriter!!.write(rootSvelteFilePath, true)
-                    val dom = SvelteBuilder.build(svelteProjectDir!!, domOutDir)
-                    this@Kvelte.rollupConfigFileWriter!!.restore()
-                    println("dom end")
-                    dom
-                }
-            }
+            val domOutDir = this.rollupConfigFileWriter!!.write(rootSvelteFilePath, true)
+            val dom = SvelteBuilder.build(svelteProjectDir!!, domOutDir)
+            this.rollupConfigFileWriter!!.restore()
 
-            val ssrHTML = ssrDeffer.await()
-            val dom = domDeffer.await()
             val js = dom.js.readText()
             val css = dom.css.readText()
             val html = KvelteBuilder.build(lang, title, ssrHTML, js, css)
-            this@Kvelte.svelteFileMap[rootSvelteFilePath] = html
-            html.replace("__KVELTE_PROPS__", jacksonObjectMapper().writeValueAsString(props))
+            this.svelteFileMap[rootSvelteFilePath] = html
         }
+
+        return this.svelteFileMap[rootSvelteFilePath]!!.replace(
+            "__KVELTE_PROPS__",
+            jacksonObjectMapper().writeValueAsString(props)
+        )
     }
 
     private fun getSvelteProjectAbsolutePath(svelteProjectDirPath: String): File {

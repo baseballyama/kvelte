@@ -10,7 +10,7 @@ import tokyo.baseballyama.kvelte.Kvelte
 
 
 fun main() {
-    Kvelte.setSvelteProjectDir("/Users/baseballyama/Desktop/git/ksveltor/examples/ktor/svelte")
+    Kvelte.setSvelteProjectDir("/Users/baseballyama/Desktop/git/kvelte/examples/ktor/svelte")
 
     var i = 0
     embeddedServer(Netty, port = 80) {
@@ -19,10 +19,8 @@ fun main() {
                 i += 1
                 call.respondText(
                     Kvelte.load(
-                        lang = "ja",
-                        title = "これはタイトル!!",
                         rootSvelteFilePath = "./src/App.svelte",
-                        props = mapOf("name" to "baseballyama-${i}")
+                        props = mapOf("name" to "baseballyama-${i}", "names" to listOf("banana", "apple"))
                     ),
                     ContentType.Text.Html
                 )
