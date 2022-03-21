@@ -6,12 +6,12 @@ KotlinユーザーがUIを構築する最速の方法
 
 # 特徴
 
-- 💎 リッチなUIを実現
+- 💎 素早くリッチなUIを実現
 - 💡 最小限のネットワーク通信量
 - 🚀 超高性能レスポンス
 - ⛏ 他のライブラリと併用可能
 
-### 💎 リッチなUIを実現
+### 💎 素早くリッチなUIを実現
 Kvelteは、KotlinユーザーがWebアプリケーションを開発する際に、[Svelte](https://svelte.jp/) をテンプレートエンジンとして利用するためのライブラリです。Ktorや Spring Boot といった特定のフレームワークに依存しないので、誰もがすぐにKvelteを使用できます。
 [State of JS 2021](https://2021.stateofjs.com/ja-JP/libraries/front-end-frameworks/) によると、Svelteは現在最も多くの人が興味を持っている最先端のフロントエンドフレームワークです。
 Svelteは、[公式が提供しているチュートリアル](https://svelte.dev/tutorial/basics) を学習することで、初学者でもすぐにリッチなUIを構築できる、という特徴を持っています。
