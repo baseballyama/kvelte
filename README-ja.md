@@ -13,12 +13,13 @@ KotlinユーザーがUIを構築する最速の方法
 
 
 ### 💎 リッチなUIを実現
-Kvelteは、Kotlinユーザーが、Ktor や Spring Boot などのWebアプリケーションを開発する際に、[Svelte](https://svelte.jp/) をテンプレートエンジンとして利用するためのライブラリです。
+Kvelteは、KotlinユーザーがWebアプリケーションを開発する際に、[Svelte](https://svelte.jp/) をテンプレートエンジンとして利用するためのライブラリです。Ktorや Spring Boot といった特定のフレームワークに依存しないので、誰もがすぐにKvelteを使用できます。
 Svelteは、[State of JS 2021](https://2021.stateofjs.com/ja-JP/libraries/front-end-frameworks/) で最も多くの人が興味を持っているフロントエンドフレームワークです。
 Svelteは、[公式が提供しているチュートリアル](https://svelte.dev/tutorial/basics) を学習することで、初学者でもすぐにリッチなUIを構築できる、という特徴を持っています。
 
+
 ### 💡 最小限のネットワーク通信量
-Svelteは本質的にコンパイラです。`.svelte` ファイルは仮想DOMを持たない最小限のJavaScriptにコンパイルされます。また、モジュールバンドラー (Rollup) を使用することにより、未使用のJavaScriptを全て削ぎ落とした最小限のJavaScriptを生成します。これにより、最小限のネットワーク通信量でユーザーにページを配信することができます。
+Svelteは本質的にコンパイラです。Svelteファイルは仮想DOMを持たない最小限のJavaScriptにコンパイルされます。また、モジュールバンドラー (Rollup) を使用することにより、未使用のJavaScriptを全て削ぎ落とした最小限のJavaScriptを生成します。これにより、最小限のネットワーク通信量でユーザーにページを配信することができます。
 
 ### 🚀 超高性能レスポンス
 `Kvelte` は、コンパイルしたSvelteファイルを事前にキャッシュしておき、リクエスト時に必要最小限の処理を実行してレスポンスします。これにより、サーバーサイドの超高性能レスポンスを実現しています。
