@@ -1,7 +1,53 @@
 package tokyo.baseballyama.kvelte
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import java.nio.file.Path
+
 internal object KvelteBuilder {
-    fun build(lang: String, title: String, ssrHtml: String, js: String, css: String): String {
+    fun build(
+        lang: String,
+        title: String,
+        ssrHtml: String,
+        js: String,
+        css: String,
+        websocketUrl: String?,
+        props: Map<String, *>,
+        svelteFilePath: Path,
+    ): String {
+        val propsJson = jacksonObjectMapper().writeValueAsString(props)
+        val hmr = if (websocketUrl == null) ""
+        else """
+            <script id="kvelte">
+                const props = JSON.stringify($propsJson);
+                const connection = new WebSocket('$websocketUrl');
+                connection.onopen = function (event) {
+                    connection.send('$svelteFilePath');
+                  };
+                connection.onmessage = function (event) {
+                const jsonStr = event.data
+                  const json = JSON.parse(jsonStr);
+                  if (json.css) {
+                    const style = document.getElementsByTagName("style")[0]
+                    if (style) style.remove()
+                    const newStyle = document.createElement('style');
+                    document.head.appendChild(newStyle);
+                    newStyle.type = 'text/css';
+                    if (newStyle.styleSheet) newStyle.styleSheet.cssText = json.css;
+                    else newStyle.appendChild(document.createTextNode(json.css));
+                  }
+                  if (json.js) {
+                    const script = document.body.getElementsByTagName("script")[0];
+                    if (script) script.remove();
+                    const newScript = document.createElement('script');
+                    const replaced = json.js.replace('${Constants.KVELTE_PROPS}', props);
+                    newScript.appendChild(document.createTextNode(replaced));
+                    document.body.appendChild(newScript);
+                  }
+                };
+                document.getElementById("kvelte").remove();
+            </script>
+        """.trimIndent()
+
         // val normalizedPath = this.removeLastSlash(path)
         return """
             <!DOCTYPE html>
@@ -12,6 +58,7 @@ internal object KvelteBuilder {
             	<title>${title}</title>
             	<link rel='icon' type='image/png' href='/favicon.png'>
             	<style>${css}</style>
+                $hmr
             </head>
             <body>${ssrHtml}<script>${js}</script></body>
             </html>

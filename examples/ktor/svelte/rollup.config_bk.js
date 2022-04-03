@@ -1,57 +1,56 @@
-import svelte from 'rollup-plugin-svelte';
-import commonjs from '@rollup/plugin-commonjs';
-import resolve from '@rollup/plugin-node-resolve';
-import livereload from 'rollup-plugin-livereload';
-import { terser } from 'rollup-plugin-terser';
-import virtual from "@rollup/plugin-virtual";
-import css from 'rollup-plugin-css-only';
+import svelte from "rollup-plugin-svelte";
+import commonjs from "@rollup/plugin-commonjs";
+import resolve from "@rollup/plugin-node-resolve";
+import livereload from "rollup-plugin-livereload";
+import { terser } from "rollup-plugin-terser";
+import css from "rollup-plugin-css-only";
 
-const production = __KVELTE_PRODUCTION__;
+const production = !process.env.ROLLUP_WATCH;
 
 function serve() {
-	let server;
+  let server;
 
-	function toExit() {
-		if (server) server.kill(0);
-	}
+  function toExit() {
+    if (server) server.kill(0);
+  }
 
-	return {
-		writeBundle() {
-			if (server) return;
-			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
-				stdio: ['ignore', 'inherit', 'inherit'],
-				shell: true
-			});
+  return {
+    writeBundle() {
+      if (server) return;
+      server = require("child_process").spawn(
+        "npm",
+        ["run", "start", "--", "--dev"],
+        {
+          stdio: ["ignore", "inherit", "inherit"],
+          shell: true,
+        }
+      );
 
-			process.on('SIGTERM', toExit);
-			process.on('exit', toExit);
-		}
-	};
+      process.on("SIGTERM", toExit);
+      process.on("exit", toExit);
+    },
+  };
 }
 
 export default {
-  input: "main",
+  input: "src/main.js",
   output: {
     sourcemap: true,
     format: "iife",
     name: "app",
-    file: __KVELTE_OUTPUT__,
+    file: "public/build/bundle.js",
   },
   plugins: [
-    virtual({
-      main: __KVELTE_INPUT__,
-    }),
     svelte({
       compilerOptions: {
         // enable run-time checks when not in production
-        dev: !production,
-        generate: __KVELTE_GENERATE__,
-        hydratable: __KVELTE_HYDRATABLE__,
+        dev: true,
+        hydratable: true,
       },
     }),
     // we'll extract any component CSS out into
     // a separate file - better for performance
-    css({ output: __KVELTE_OUTPUT_CSS__ }),
+    css({ output: "bundle.css" }),
 
     // If you have external dependencies installed from
     // npm, you'll most likely need these plugins. In
@@ -80,124 +79,3 @@ export default {
     clearScreen: false,
   },
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

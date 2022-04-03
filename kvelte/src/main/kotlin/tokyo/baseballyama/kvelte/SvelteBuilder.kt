@@ -1,10 +1,11 @@
 package tokyo.baseballyama.kvelte
 
 import java.io.File
+import java.nio.file.Path
 
 internal object SvelteBuilder {
-    fun build(svelteProjectDir: File, outputDir: File): SvelteFilePaths {
-        Command.execute("npm", "run", "build", "--prefix", svelteProjectDir.absolutePath)
+    fun build(svelteProjectDir: Path, outputDir: File): SvelteFilePaths {
+        Command.execute("npm", "run", "build", "--prefix", svelteProjectDir.toFile().absolutePath)
         return SvelteFilePaths(
             outDir = outputDir,
             js = outputDir.resolve(RollupConfigFileWriter.OUTPUT_FILE_NAME_JS),

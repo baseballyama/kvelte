@@ -12,7 +12,7 @@
 	<p>お名前です</p>		
 	<div>{name}</div>
 	{/each}
-	<h1>Hello {name}!</h1>
+	<h1>Hello {name}! (書き換えます!)</h1>
 	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
 	<div on:click="{() => count += 1}">count: {count}</div>
 
@@ -28,7 +28,7 @@
 	}
 
 	h1 {
-		color: #ff3e00;
+		color: blue;
 		text-transform: uppercase;
 		font-size: 4em;
 		font-weight: 100;

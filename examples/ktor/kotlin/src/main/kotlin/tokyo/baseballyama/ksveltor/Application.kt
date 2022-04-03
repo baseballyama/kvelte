@@ -7,10 +7,15 @@ import io.ktor.routing.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import tokyo.baseballyama.kvelte.Kvelte
+import tokyo.baseballyama.kvelte.KvelteConfig
+import java.nio.file.Path
 
 
 fun main() {
-    Kvelte.setSvelteProjectDir("/Users/baseballyama/Desktop/git/kvelte/examples/ktor/svelte")
+    val kvelte = Kvelte(KvelteConfig(
+        svelteProjectDir = Path.of("/Users/baseballyama/Desktop/git/kvelte/examples/ktor/svelte"),
+        production = false
+    ))
 
     var i = 0
     embeddedServer(Netty, port = 80) {
@@ -18,7 +23,7 @@ fun main() {
             get("/") {
                 i += 1
                 call.respondText(
-                    Kvelte.load(
+                    kvelte.load(
                         rootSvelteFilePath = "./src/App.svelte",
                         props = mapOf("name" to "baseballyama-${i}", "names" to listOf("banana", "apple"))
                     ),

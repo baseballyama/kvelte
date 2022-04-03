@@ -10,7 +10,7 @@ import java.nio.file.Path
 /**
  * Svelteファイルをビルドするための仮想ファイルを rollup.config.js に書き込むクラスです.
  */
-internal class RollupConfigFileWriter(private val svelteProjectDir: File, private val isProduction: Boolean) {
+internal class RollupConfigFileWriter(private val svelteProjectDir: Path, private val isProduction: Boolean) {
     private val rollupFile: File
     private val originalText: String
     private val outputFolder = this.getOutputFolder()
@@ -69,16 +69,16 @@ internal class RollupConfigFileWriter(private val svelteProjectDir: File, privat
             .replace(KVELTE_OUTPUT_CSS, "\"" + "bundle.css" + "\"")
             .replace(KVELTE_GENERATE, "\"" + (if (dom) "dom" else "ssr") + "\"")
             .replace(KVELTE_HYDRATABLE, (if (dom) "true" else "false"))
-            .replace(KVELTE_PRODUCTION, (if (isProduction) "true" else "false"))
+            .replace(KVELTE_PRODUCTION, (if (isProduction) "true" else "true"))
     }
 
-    private fun throwExceptionIfSvelteFileIsNotExists(svelteProjectDir: File, rootSvelteFilePath: String) {
-        val file = svelteProjectDir.resolve(rootSvelteFilePath)
+    private fun throwExceptionIfSvelteFileIsNotExists(svelteProjectDir: Path, rootSvelteFilePath: String) {
+        val file = svelteProjectDir.resolve(rootSvelteFilePath).toFile()
         if (!file.exists()) throw KvelteException("Svelte file does not exists. path: ${file.absolutePath}")
     }
 
-    private fun getRollupConfigFile(svelteProjectDir: File): File {
-        val file = svelteProjectDir.resolve(ROLLUP_FILE_NAME)
+    private fun getRollupConfigFile(svelteProjectDir: Path): File {
+        val file = svelteProjectDir.resolve(ROLLUP_FILE_NAME).toFile()
         if (!file.exists()) throw KvelteException("rollup.config.js does not exists. path: ${file.absolutePath}")
         return file
     }

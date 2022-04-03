@@ -1,91 +1,99 @@
 package tokyo.baseballyama.kvelte
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import java.io.File
-import java.nio.file.Paths
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import tokyo.baseballyama.kvelte.file.FileUtils
+import tokyo.baseballyama.kvelte.file.FileWatcher
+import java.nio.file.Path
+import kotlin.io.path.relativeTo
 
 fun main() {
-    Kvelte.setSvelteProjectDir("/Users/baseballyama/Desktop/git/ksveltor/examples/ktor/svelte")
-    println(Kvelte.load("en", "テストです!", "./src/App.svelte", mapOf<String, String>()))
+    val kvelte =
+        Kvelte(KvelteConfig(svelteProjectDir = Path.of("/Users/baseballyama/Desktop/git/ksveltor/examples/ktor/svelte")))
+    println(kvelte.load("./src/App.svelte", mapOf<String, String>()))
 }
 
-object Kvelte {
+class Kvelte(private val config: KvelteConfig) {
 
-    private var svelteProjectDir: File? = null
-    fun setSvelteProjectDir(path: String) {
-        this.svelteProjectDir = this.getSvelteProjectAbsolutePath(path)
-        this.rollupConfigFileWriter = RollupConfigFileWriter(this.svelteProjectDir!!, this.isProduction)
-    }
-
-    private var enableSSR = true
-    fun setEnableSSR(enableSSR: Boolean) {
-        this.enableSSR = enableSSR
-    }
-
-    private var isProduction = true
-    fun setIsProduction(isProduction: Boolean) {
-        this.isProduction = isProduction
-        this.rollupConfigFileWriter = RollupConfigFileWriter(this.svelteProjectDir!!, this.isProduction)
-    }
-
-    private var defaultLang = "en"
-    fun setDefaultLang(defaultLang: String) {
-        this.defaultLang = defaultLang
-    }
-
-    private var defaultTitle = "Hello Kvelte"
-    fun setDefaultTitle(defaultTitle: String) {
-        this.defaultTitle = defaultTitle
-    }
-
-    private var rollupConfigFileWriter: RollupConfigFileWriter? = null
-
+    private val rollupConfigFileWriter: RollupConfigFileWriter =
+        RollupConfigFileWriter(config.svelteProjectDir, config.production)
     private val svelteFileMap = mutableMapOf<String, String>()
+    private val dirSize = FileUtils.getDirectorySize(config.svelteProjectDir)
+    private val totalSpace = config.svelteProjectDir.toFile().totalSpace
+    private val availableProcessorsCount = Runtime.getRuntime().availableProcessors()
+    private val threadCount = availableProcessorsCount.coerceAtMost((totalSpace / dirSize).toInt())
+    private val websocket = if (config.production) null else Websocket()
+
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            FileWatcher(config.svelteProjectDir).use { watcher ->
+                while (true) {
+                    watcher.watch { path ->
+                        println("update: $path")
+                        println(path.toString().endsWith(".svelte"))
+                        if (path.toString().endsWith(".svelte")) {
+                            val relativePath = path.toAbsolutePath().relativeTo(config.svelteProjectDir)
+                            val domOutDir =
+                                this@Kvelte.rollupConfigFileWriter.write(relativePath.toString(), true)
+                            val dom = SvelteBuilder.build(config.svelteProjectDir, domOutDir)
+                            this@Kvelte.rollupConfigFileWriter.restore()
+                            val js = dom.js.readText()
+                            val css = dom.css.readText()
+                            val map = mapOf("css" to css, "js" to js)
+                            this@Kvelte.websocket?.update(
+                                path.toString(),
+                                jacksonObjectMapper().writeValueAsString(map)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     fun load(
-        lang: String = defaultLang,
-        title: String = defaultTitle,
         rootSvelteFilePath: String,
-        props: Map<String, *>
+        props: Map<String, *>,
+        lang: String = config.defaultLang,
+        title: String = config.defaultTitle,
     ): String {
-        if (svelteProjectDir == null) throw KvelteException("should set value to ${Kvelte::class.java.name}.${Kvelte::svelteProjectDir.name} before calling this method")
+
+        val rootSvelteAbsoluteFilePath = config.svelteProjectDir.resolve(rootSvelteFilePath).normalize()
 
         // キャッシュが存在しない場合はSvelteファイルを読み込む
         if (!this.svelteFileMap.containsKey(rootSvelteFilePath)) {
             // ssr
-            val ssrHTML = if (enableSSR) {
-                val ssrOutDir = this.rollupConfigFileWriter!!.write(rootSvelteFilePath, false)
-                val ssr = SvelteBuilder.build(svelteProjectDir!!, ssrOutDir)
-                this.rollupConfigFileWriter!!.restore()
+            val ssrHTML = if (config.hydration) {
+                val ssrOutDir = this.rollupConfigFileWriter.write(rootSvelteFilePath, false)
+                val ssr = SvelteBuilder.build(config.svelteProjectDir, ssrOutDir)
+                this.rollupConfigFileWriter.restore()
                 Command.execute("node", ssr.js.absolutePath).stdout
             } else ""
 
             // dom
-            val domOutDir = this.rollupConfigFileWriter!!.write(rootSvelteFilePath, true)
-            val dom = SvelteBuilder.build(svelteProjectDir!!, domOutDir)
-            this.rollupConfigFileWriter!!.restore()
+            val domOutDir = this.rollupConfigFileWriter.write(rootSvelteFilePath, true)
+            val dom = SvelteBuilder.build(config.svelteProjectDir, domOutDir)
+            this.rollupConfigFileWriter.restore()
 
             val js = dom.js.readText()
             val css = dom.css.readText()
-            val html = KvelteBuilder.build(lang, title, ssrHTML, js, css)
+            val html =
+                KvelteBuilder.build(lang, title, ssrHTML, js, css, websocket?.url, props, rootSvelteAbsoluteFilePath)
             this.svelteFileMap[rootSvelteFilePath] = html
         }
 
-        return this.svelteFileMap[rootSvelteFilePath]!!.replace(
-            "__KVELTE_PROPS__",
+        return replaceLast(
+            this.svelteFileMap[rootSvelteFilePath]!!,
+            Constants.KVELTE_PROPS,
             jacksonObjectMapper().writeValueAsString(props)
         )
     }
 
-    private fun getSvelteProjectAbsolutePath(svelteProjectDirPath: String): File {
-        val dir = if (svelteProjectDirPath.startsWith("/")) {
-            File(svelteProjectDirPath)
-        } else {
-            val abs = File("").absolutePath
-            Paths.get(abs).resolve(svelteProjectDirPath).toFile()
-        }
-        if (!dir.exists()) throw KvelteException("Svelte project does not exists. path: ${dir.absolutePath}")
-        return dir
+    private fun replaceLast(string: String, substring: String, replacement: String): String {
+        val index = string.lastIndexOf(substring);
+        if (index == -1) return string
+        return string.substring(0, index) + replacement + string.substring(index + substring.length);
     }
 }
