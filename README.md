@@ -39,6 +39,10 @@ Svelteは本質的にコンパイラです。Svelteファイルは仮想DOMを�
 `Kvelte` は開発モードにおいてHMR (Hot Module Replacement) をサポートしています。これにより、開発中に変更を加えるとリロードなしにブラウザに反映されます。
 これにより、CSSやHTMLの変更を即座に反映することができるので、開発効率が大幅に上昇します。
 
+# デモ
+
+https://user-images.githubusercontent.com/19153718/163550795-43514dc5-898d-4507-b1f8-4bc5676a4d99.mp4
+
 # 使用方法
 
 WIP

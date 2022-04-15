@@ -17,15 +17,15 @@ fun main() {
         production = false
     ))
 
-    var i = 0
+    var count = 0
     embeddedServer(Netty, port = 80) {
         routing {
             get("/") {
-                i += 1
+                count += 1
                 call.respondText(
                     kvelte.load(
                         pRootSvelteFilePath = "./src/App.svelte",
-                        props = mapOf("name" to "baseballyama-${i}", "names" to listOf("banana", "apple"))
+                        props = mapOf("count" to count)
                     ),
                     ContentType.Text.Html
                 )

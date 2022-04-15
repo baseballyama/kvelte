@@ -4,24 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="17d6cdfc-fb77-446a-8f46-0d72eb49d6c8" name="変更" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/DependencyTree.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/kotlin/tokyo/baseballyama/kvelte/DependencyTreeTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/resources/js-imports.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../examples/ktor/kotlin/src/main/kotlin/tokyo/baseballyama/ksveltor/Application.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../examples/ktor/kotlin/src/main/kotlin/tokyo/baseballyama/ksveltor/Application.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../examples/ktor/svelte/rollup.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../examples/ktor/svelte/rollup.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../examples/ktor/svelte/src/App.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/../examples/ktor/svelte/src/App.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../examples/ktor/svelte/src/Sub.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/../examples/ktor/svelte/src/Sub.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/Command.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/Command.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/Constants.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/Constants.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/Kvelte.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/Kvelte.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/KvelteBuilder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/KvelteBuilder.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/Websocket.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/Websocket.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/file/FileUtils.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/file/FileUtils.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/file/FileWatcher.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/file/FileWatcher.kt" afterDir="false" />
-    </list>
+    <list default="true" id="17d6cdfc-fb77-446a-8f46-0d72eb49d6c8" name="変更" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -44,6 +27,11 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="kvelte" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="kvelte" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
               </path>
             </expand>
             <select />
