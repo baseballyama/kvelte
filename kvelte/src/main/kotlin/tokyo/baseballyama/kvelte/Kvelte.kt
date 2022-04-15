@@ -9,11 +9,6 @@ import tokyo.baseballyama.kvelte.file.FileWatcher
 import java.nio.file.Path
 import kotlin.io.path.relativeTo
 
-fun main() {
-    val kvelte =
-        Kvelte(KvelteConfig(svelteProjectDir = Path.of("/Users/baseballyama/Desktop/git/ksveltor/examples/ktor/svelte")))
-    println(kvelte.load("./src/App.svelte", mapOf<String, String>()))
-}
 
 class Kvelte(private val config: KvelteConfig) {
 
@@ -27,12 +22,23 @@ class Kvelte(private val config: KvelteConfig) {
     private val websocket = if (config.production) null else Websocket()
 
     init {
+
+        CoroutineScope(Dispatchers.IO).launch {
+            FileUtils.findFiles(
+                config.svelteProjectDir,
+                "(node_modules|build|public)".toRegex(),
+                ".*\\.(svelte|svx)$".toRegex()
+            ).forEach { file ->
+                val rootSvelteFilePath = file.relativeTo(config.svelteProjectDir).normalize().toString()
+                println("init:$rootSvelteFilePath")
+                this@Kvelte.load(rootSvelteFilePath, mapOf<String, String>(), "en", "")
+            }
+        }
+
         CoroutineScope(Dispatchers.IO).launch {
             FileWatcher(config.svelteProjectDir).use { watcher ->
                 while (true) {
                     watcher.watch { path ->
-                        println("update: $path")
-                        println(path.toString().endsWith(".svelte"))
                         if (path.toString().endsWith(".svelte")) {
                             val relativePath = path.toAbsolutePath().relativeTo(config.svelteProjectDir)
                             val domOutDir =
@@ -40,8 +46,11 @@ class Kvelte(private val config: KvelteConfig) {
                             val dom = SvelteBuilder.build(config.svelteProjectDir, domOutDir)
                             this@Kvelte.rollupConfigFileWriter.restore()
                             val js = dom.js.readText()
-                            val css = dom.css.readText()
-                            val map = mapOf("css" to css, "js" to js)
+                            val css = if (dom.css.exists()) dom.css.readText() else ""
+                            val map = mapOf(
+                                "css" to css,
+                                "js" to js.replace(Constants.KVELTE_PROPS, Constants.KVELTE_WEBHOOK_PROPS)
+                            )
                             this@Kvelte.websocket?.update(
                                 path.toString(),
                                 jacksonObjectMapper().writeValueAsString(map)
@@ -54,38 +63,53 @@ class Kvelte(private val config: KvelteConfig) {
     }
 
     fun load(
-        rootSvelteFilePath: String,
+        pRootSvelteFilePath: String,
         props: Map<String, *>,
         lang: String = config.defaultLang,
         title: String = config.defaultTitle,
     ): String {
 
+        val rootSvelteFilePath = Path.of(pRootSvelteFilePath).normalize()
         val rootSvelteAbsoluteFilePath = config.svelteProjectDir.resolve(rootSvelteFilePath).normalize()
 
+        println("load: $rootSvelteFilePath")
+
         // キャッシュが存在しない場合はSvelteファイルを読み込む
-        if (!this.svelteFileMap.containsKey(rootSvelteFilePath)) {
+        if (!this.svelteFileMap.containsKey(rootSvelteFilePath.toString())) {
             // ssr
             val ssrHTML = if (config.hydration) {
-                val ssrOutDir = this.rollupConfigFileWriter.write(rootSvelteFilePath, false)
+                val ssrOutDir = this.rollupConfigFileWriter.write(rootSvelteFilePath.toString(), false)
                 val ssr = SvelteBuilder.build(config.svelteProjectDir, ssrOutDir)
+                println("ssrOutDir: $ssrOutDir")
+                println("ssr: $ssr")
                 this.rollupConfigFileWriter.restore()
                 Command.execute("node", ssr.js.absolutePath).stdout
             } else ""
 
             // dom
-            val domOutDir = this.rollupConfigFileWriter.write(rootSvelteFilePath, true)
+            val domOutDir = this.rollupConfigFileWriter.write(rootSvelteFilePath.toString(), true)
             val dom = SvelteBuilder.build(config.svelteProjectDir, domOutDir)
+            println("domOutDir: $domOutDir")
+            println("dom: $dom")
             this.rollupConfigFileWriter.restore()
 
             val js = dom.js.readText()
-            val css = dom.css.readText()
+            val css = if (dom.css.exists()) dom.css.readText() else ""
             val html =
-                KvelteBuilder.build(lang, title, ssrHTML, js, css, websocket?.url, props, rootSvelteAbsoluteFilePath)
-            this.svelteFileMap[rootSvelteFilePath] = html
+                KvelteBuilder.build(
+                    lang,
+                    title,
+                    ssrHTML,
+                    js,
+                    css,
+                    websocket?.url,
+                    props,
+                    rootSvelteAbsoluteFilePath
+                )
+            this.svelteFileMap[rootSvelteFilePath.toString()] = html
         }
 
-        return replaceLast(
-            this.svelteFileMap[rootSvelteFilePath]!!,
+        return this.svelteFileMap[rootSvelteFilePath.toString()]!!.replace(
             Constants.KVELTE_PROPS,
             jacksonObjectMapper().writeValueAsString(props)
         )

@@ -13,16 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
-import java.nio.file.Path
 import java.time.Duration
-
-fun main() {
-    val p1 = Path.of("aaa/./bbb").normalize()
-    val p2 = Path.of("aaa/.bbb").normalize()
-    println(p1)
-    println(p2)
-
-}
 
 class Websocket(private val port: Int = java.net.ServerSocket(0).localPort) {
 
@@ -53,7 +44,6 @@ class Websocket(private val port: Int = java.net.ServerSocket(0).localPort) {
     }
 
     fun update(path: String, text: String) {
-        println("paths: ${outgoings.keys}")
         outgoings[path]?.forEach { (_, outgoing) ->
             CoroutineScope(Dispatchers.IO).launch {
                 outgoing.send(Frame.Text(text))

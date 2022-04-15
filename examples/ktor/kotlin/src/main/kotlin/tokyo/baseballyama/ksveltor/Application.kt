@@ -24,7 +24,7 @@ fun main() {
                 i += 1
                 call.respondText(
                     kvelte.load(
-                        rootSvelteFilePath = "./src/App.svelte",
+                        pRootSvelteFilePath = "./src/App.svelte",
                         props = mapOf("name" to "baseballyama-${i}", "names" to listOf("banana", "apple"))
                     ),
                     ContentType.Text.Html

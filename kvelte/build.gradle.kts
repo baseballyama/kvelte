@@ -19,6 +19,8 @@ dependencies {
     implementation("io.ktor:ktor-server-netty:1.6.8")
     implementation("io.ktor:ktor-websockets:1.6.8")
     implementation("org.slf4j:slf4j-nop:1.7.36")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
 }
 
 tasks.withType<Jar> {
@@ -52,4 +54,21 @@ plugins.withId("com.vanniktech.maven.publish") {
     }
 }
 
+tasks.test {
+    // JUnit platform を使う設定
+    useJUnitPlatform()
 
+    testLogging {
+        // テスト時の標準出力と標準エラー出力を表示する
+        showStandardStreams = true
+        // イベントを出力する (TestLogEvent)
+        events = setOf(
+            org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
+        )
+        // 例外発生時の出力設定 (TestExceptionFormat)
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
+}

@@ -18,7 +18,7 @@ internal object KvelteBuilder {
         val hmr = if (websocketUrl == null) ""
         else """
             <script id="kvelte">
-                const props = JSON.stringify($propsJson);
+                const props = JSON.stringify(${Constants.KVELTE_PROPS});
                 const connection = new WebSocket('$websocketUrl');
                 connection.onopen = function (event) {
                     connection.send('$svelteFilePath');
@@ -39,7 +39,7 @@ internal object KvelteBuilder {
                     const script = document.body.getElementsByTagName("script")[0];
                     if (script) script.remove();
                     const newScript = document.createElement('script');
-                    const replaced = json.js.replace('${Constants.KVELTE_PROPS}', props);
+                    const replaced = json.js.replace('${Constants.KVELTE_WEBHOOK_PROPS}', props);
                     newScript.appendChild(document.createTextNode(replaced));
                     document.body.appendChild(newScript);
                   }

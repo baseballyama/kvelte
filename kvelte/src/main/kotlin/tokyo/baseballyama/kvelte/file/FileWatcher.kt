@@ -14,7 +14,6 @@ internal class FileWatcher(private val dir: Path) : AutoCloseable {
     init {
         Files.walkFileTree(dir, object : SimpleFileVisitor<Path>() {
             override fun preVisitDirectory(dir: Path, attrs: BasicFileAttributes): FileVisitResult {
-                println(dir.name)
                 return if (dir.name == "node_modules" || dir.name == "build" || dir.name == "public") {
                     FileVisitResult.SKIP_SUBTREE
                 } else {
@@ -37,8 +36,6 @@ internal class FileWatcher(private val dir: Path) : AutoCloseable {
         watcher.take().run {
             watchKeys.forEach { (watchKey, path) ->
                 watchKey.pollEvents().forEach {
-                    println("path: ${path}")
-                    println("it.context(): ${it.context()}")
                     listener(path.resolve(it.context().toString()))
                 }
                 watchKey.reset()

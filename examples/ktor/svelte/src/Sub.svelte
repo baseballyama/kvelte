@@ -1,4 +1,6 @@
 <script>
+	import aadawdwdaadawdwdaadawdwdaadawdwdaadawdwdaadawdwdaadawdwdaadawdwdaadawdwd 
+	from './App.svelte'
 	export let name;
 </script>
 

@@ -9,8 +9,8 @@ internal object Command {
     fun execute(vararg commands: String): CommandResult {
         val process = Runtime.getRuntime().exec(commands)
         return CommandResult(
-            read(process.inputStream) { s -> println(s) },
-            read(process.errorStream) { s -> System.err.println(s) },
+            read(process.inputStream) { },
+            read(process.errorStream) { },
             process.waitFor().toString()
         )
     }
