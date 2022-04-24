@@ -5,17 +5,18 @@
 
 <svelte:head>
   <title>Kvelte Demo</title>
+  <html lang="ja">
 </svelte:head>
 <main>
-  <h1>Kvelte Demo</h1>
+  <h1>Kvelte Demo222</h1>
   <p>Server Request Count: {count}</p>
   <button on:click="{() => (clientCount += 1)}">Click Me!</button>
-  <p>Clicked Count: {clientCount}</p>
+  <p>Clicked Count: {clientCount}</p> 
 </main>
 
 <style>
   main {
-    text-align: center;
+    text-align: center; 
     padding: 1em;
     margin: 0 auto;
   }

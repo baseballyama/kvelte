@@ -4,8 +4,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import tokyo.baseballyama.kvelte.file.FileUtils
-import tokyo.baseballyama.kvelte.file.FileWatcher
+import tokyo.baseballyama.kvelte.dev.hmr.Hmr
+import tokyo.baseballyama.kvelte.utils.FileUtils
 import java.nio.file.Path
 import kotlin.io.path.relativeTo
 
@@ -19,10 +19,10 @@ class Kvelte(private val config: KvelteConfig) {
     private val totalSpace = config.svelteProjectDir.toFile().totalSpace
     private val availableProcessorsCount = Runtime.getRuntime().availableProcessors()
     private val threadCount = availableProcessorsCount.coerceAtMost((totalSpace / dirSize).toInt())
-    private val websocket = if (config.production) null else Websocket()
+
+    private lateinit var hmr: Hmr
 
     init {
-
         CoroutineScope(Dispatchers.IO).launch {
             FileUtils.findFiles(
                 config.svelteProjectDir,
@@ -30,36 +30,11 @@ class Kvelte(private val config: KvelteConfig) {
                 ".*\\.(svelte|svx)$".toRegex()
             ).forEach { file ->
                 val rootSvelteFilePath = file.relativeTo(config.svelteProjectDir).normalize().toString()
-                println("init:$rootSvelteFilePath")
                 this@Kvelte.load(rootSvelteFilePath, mapOf<String, String>(), "en", "")
             }
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            FileWatcher(config.svelteProjectDir).use { watcher ->
-                while (true) {
-                    watcher.watch { path ->
-                        if (path.toString().endsWith(".svelte")) {
-                            val relativePath = path.toAbsolutePath().relativeTo(config.svelteProjectDir)
-                            val domOutDir =
-                                this@Kvelte.rollupConfigFileWriter.write(relativePath.toString(), true)
-                            val dom = SvelteBuilder.build(config.svelteProjectDir, domOutDir)
-                            this@Kvelte.rollupConfigFileWriter.restore()
-                            val js = dom.js.readText()
-                            val css = if (dom.css.exists()) dom.css.readText() else ""
-                            val map = mapOf(
-                                "css" to css,
-                                "js" to js.replace(Constants.KVELTE_PROPS, Constants.KVELTE_WEBHOOK_PROPS)
-                            )
-                            this@Kvelte.websocket?.update(
-                                path.toString(),
-                                jacksonObjectMapper().writeValueAsString(map)
-                            )
-                        }
-                    }
-                }
-            }
-        }
+        if (!config.production) hmr = Hmr(config.svelteProjectDir, this.rollupConfigFileWriter, mapOf()) {}
     }
 
     fun load(
@@ -85,6 +60,7 @@ class Kvelte(private val config: KvelteConfig) {
                 this.rollupConfigFileWriter.restore()
                 Command.execute("node", ssr.js.absolutePath).stdout
             } else ""
+            println(ssrHTML)
 
             // dom
             val domOutDir = this.rollupConfigFileWriter.write(rootSvelteFilePath.toString(), true)
@@ -97,12 +73,11 @@ class Kvelte(private val config: KvelteConfig) {
             val css = if (dom.css.exists()) dom.css.readText() else ""
             val html =
                 KvelteBuilder.build(
-                    lang,
-                    title,
+                    config.lang,
                     ssrHTML,
                     js,
                     css,
-                    websocket?.url,
+                    hmr.websocketUrl,
                     props,
                     rootSvelteAbsoluteFilePath
                 )

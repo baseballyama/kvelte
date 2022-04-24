@@ -1,12 +1,10 @@
 package tokyo.baseballyama.kvelte
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import java.nio.file.Path
 
 internal object KvelteBuilder {
     fun build(
         lang: String,
-        title: String,
         ssrHtml: String,
         js: String,
         css: String,
@@ -14,7 +12,6 @@ internal object KvelteBuilder {
         props: Map<String, *>,
         svelteFilePath: Path,
     ): String {
-        val propsJson = jacksonObjectMapper().writeValueAsString(props)
         val hmr = if (websocketUrl == null) ""
         else """
             <script id="kvelte">
@@ -55,7 +52,6 @@ internal object KvelteBuilder {
             <head>
             	<meta charset='utf-8'>
             	<meta name='viewport' content='width=device-width,initial-scale=1'>
-            	<title>${title}</title>
             	<link rel='icon' type='image/png' href='/favicon.png'>
             	<style>${css}</style>
                 $hmr

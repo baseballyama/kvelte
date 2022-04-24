@@ -23,6 +23,7 @@ internal class RollupConfigFileWriter(private val svelteProjectDir: Path, privat
         private const val KVELTE_GENERATE = "__KVELTE_GENERATE__"
         private const val KVELTE_HYDRATABLE = "__KVELTE_HYDRATABLE__"
         private const val KVELTE_PRODUCTION = "__KVELTE_PRODUCTION__"
+        private const val KVELTE_MODULE_CONTEXT = "__KVELTE_MODULE_CONTEXT__"
         const val OUTPUT_FILE_NAME_JS = "bundle.js"
         const val OUTPUT_FILE_NAME_JS_SOURCE_MAP = "bundle.js.map"
         const val OUTPUT_FILE_NAME_CSS = "bundle.css"
@@ -70,6 +71,7 @@ internal class RollupConfigFileWriter(private val svelteProjectDir: Path, privat
             .replace(KVELTE_GENERATE, "\"" + (if (dom) "dom" else "ssr") + "\"")
             .replace(KVELTE_HYDRATABLE, (if (dom) "true" else "false"))
             .replace(KVELTE_PRODUCTION, (if (isProduction) "true" else "true"))
+            .replace(KVELTE_MODULE_CONTEXT, "(id) => { console.log(`kvelte_module_context: \${id}`); }")
     }
 
     private fun throwExceptionIfSvelteFileIsNotExists(svelteProjectDir: Path, rootSvelteFilePath: String) {
@@ -87,6 +89,7 @@ internal class RollupConfigFileWriter(private val svelteProjectDir: Path, privat
         val text = rollupFile.readText()
         if (text.indexOf(KVELTE_INPUT) == -1) throw KvelteException("rollup.config.js does not contains $KVELTE_INPUT")
         if (text.indexOf(KVELTE_OUTPUT) == -1) throw KvelteException("rollup.config.js does not contains $KVELTE_OUTPUT")
+        if (text.indexOf(KVELTE_MODULE_CONTEXT) == -1) throw KvelteException("rollup.config.js does not contains $KVELTE_MODULE_CONTEXT")
         // MEMO: CSSファイルはないならないで良い
         // if (text.indexOf(KVELTE_OUTPUT_CSS) == -1) throw KvelteException("rollup.config.js does not contains $KVELTE_OUTPUT_CSS")
         if (text.indexOf(KVELTE_GENERATE) == -1) throw KvelteException("rollup.config.js does not contains $KVELTE_GENERATE")

@@ -3,10 +3,12 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
-import virtual from "@rollup/plugin-virtual";
+import sveltePreprocess from 'svelte-preprocess';
+import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
+import virtual from "@rollup/plugin-virtual";
 
-const production = __KVELTE_PRODUCTION__;
+const production = !process.env.ROLLUP_WATCH;
 
 function serve() {
 	let server;
@@ -30,29 +32,24 @@ function serve() {
 }
 
 export default {
-  input: "main",
+  input: "src/main.ts",
   output: {
     sourcemap: true,
     format: "iife",
     name: "app",
-    file: __KVELTE_OUTPUT__,
+    file: "public/build/bundle.js",
   },
-  moduleContext: __KVELTE_MODULE_CONTEXT__,
   plugins: [
-    virtual({
-      main: __KVELTE_INPUT__,
-    }),
     svelte({
+      preprocess: sveltePreprocess({ sourceMap: !production }),
       compilerOptions: {
         // enable run-time checks when not in production
         dev: !production,
-        generate: __KVELTE_GENERATE__,
-        hydratable: __KVELTE_HYDRATABLE__,
       },
     }),
     // we'll extract any component CSS out into
     // a separate file - better for performance
-    css({ output: __KVELTE_OUTPUT_CSS__ }),
+    css({ output: "bundle.css" }),
 
     // If you have external dependencies installed from
     // npm, you'll most likely need these plugins. In
@@ -64,6 +61,10 @@ export default {
       dedupe: ["svelte"],
     }),
     commonjs(),
+    typescript({
+      sourceMap: !production,
+      inlineSources: !production,
+    }),
 
     // In dev mode, call `npm run start` once
     // the bundle has been generated

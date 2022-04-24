@@ -1,4 +1,4 @@
-package tokyo.baseballyama.kvelte.file
+package tokyo.baseballyama.kvelte.dev.hmr
 
 import com.sun.nio.file.SensitivityWatchEventModifier
 import java.nio.file.*
@@ -7,7 +7,7 @@ import java.nio.file.attribute.BasicFileAttributes
 import kotlin.io.path.name
 
 
-internal class FileWatcher(private val dir: Path) : AutoCloseable {
+internal class FileWatcher(dir: Path) : AutoCloseable {
     private val watcher: WatchService = dir.fileSystem.newWatchService()
     private val watchKeys = mutableMapOf<WatchKey, Path>()
 

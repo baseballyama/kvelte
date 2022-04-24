@@ -1,4 +1,4 @@
-package tokyo.baseballyama.kvelte
+package tokyo.baseballyama.kvelte.dev.hmr
 
 
 import io.ktor.application.*
@@ -15,7 +15,7 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import java.time.Duration
 
-class Websocket(private val port: Int = java.net.ServerSocket(0).localPort) {
+internal class Websocket(port: Int = java.net.ServerSocket(0).localPort) {
 
     val url = "ws://localhost:$port"
 

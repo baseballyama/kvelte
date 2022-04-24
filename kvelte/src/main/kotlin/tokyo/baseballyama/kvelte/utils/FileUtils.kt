@@ -1,4 +1,4 @@
-package tokyo.baseballyama.kvelte.file
+package tokyo.baseballyama.kvelte.utils
 
 import java.nio.file.FileVisitResult
 import java.nio.file.Files
