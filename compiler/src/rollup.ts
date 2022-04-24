@@ -5,23 +5,36 @@ import fs from "fs";
 import path from "path";
 import { Result, Success, Failure } from "./utils/result";
 
-global.kvelte = {
-  dependencies: {},
+export type Props = {
+  svelteProjectAbsDirPath: string;
+  svelteRelativeFilePath: string;
+  outputAbsDirPath: string;
+  dom: boolean;
+  debug: boolean;
 };
 
-export function modify(
-  sourceAbsPath: string,
-  config: RollupConfig,
-  targetAbsPath: string
-): Result<string, Error> {
-  global.kvelte.dependencies[config.inputSvelteFilePath] = [];
+global.kvelte = {};
+
+/**
+ * manipulate `rollup.config.js` for using it by kvelte.
+ *
+ * @param sourceAbsPath
+ * @param config
+ * @param targetAbsPath folder path of manipulated rollup.config.js.
+ * @returns
+ */
+export function manipulate(props: Props): Result<string, Error> {
+  global.kvelte[props.svelteRelativeFilePath] = {
+    dependencies: [],
+    ssr: "",
+  };
   // read input file
-  const baseNode = readInputFile(sourceAbsPath);
+  const baseNode = readInputFile(props.svelteProjectAbsDirPath);
 
   // validation
   if (!hasRollupPluginVirtual(baseNode)) {
     return errorIsRequired(
-      `import virtual from "@rollup/plugin-virtual"`,
+      `import virtual from "@rollup/plugin-virtual";`,
       "Please run 'npm i -D @rollup/plugin-virtual'"
     );
   }
@@ -37,24 +50,37 @@ export function modify(
 
   const css = getCss(plugins);
 
+  const resolve = getPluginNodeResolve(baseNode, plugins);
+  if (!resolve) {
+    return errorIsRequired(
+      `import resolve from '@rollup/plugin-node-resolve';"`,
+      "Please run 'npm i -D @rollup/plugin-node-resolve'"
+    );
+  }
+
   // manipulate input
   manipulateInput(exportDefault);
-  manipulateOutput(exportDefault, config);
-  manipulateVirtualNode(plugins, config);
-  manipulateSvelteGenerate(svelte, config);
+  manipulateOutput(exportDefault, props);
+  manipulateVirtualNode(plugins, props);
+  manipulateSvelteGenerate(svelte, props);
   if (css) manipulateCss(css, "bundle.css");
-  manipulateModuleContext(exportDefault, config);
+  manipulateResolve(resolve, props);
+  manipulateModuleContext(exportDefault, props);
   manipulateWatch(exportDefault);
 
   // write modified file
-  const dir = path.dirname(targetAbsPath);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-  fs.writeFileSync(targetAbsPath, escodegen.generate(baseNode));
-  return new Success("success");
+  const dir = path.resolve(props.svelteProjectAbsDirPath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  const generated = escodegen.generate(baseNode);
+  fs.writeFileSync(path.join(dir, "rollup.config.js"), generated);
+  return new Success(generated);
 }
 
-function readInputFile(sourceAbsPath: string): Node {
-  const str = fs.readFileSync(sourceAbsPath, "utf-8");
+function readInputFile(inputSvelteProjectAbsDirPath: string): Node {
+  const str = fs.readFileSync(
+    path.join(inputSvelteProjectAbsDirPath, "rollup.config.js"),
+    "utf-8"
+  );
   return Parser.parse(str, { ecmaVersion: "latest", sourceType: "module" });
 }
 
@@ -114,15 +140,36 @@ function getSvelte(plugins: Node): Node | undefined {
 }
 
 function getCss(plugins: Node): Node | undefined {
-  let svelte: Node | undefined = undefined;
+  let css: Node | undefined = undefined;
   simple(plugins, {
     CallExpression(node) {
       if ((node as any).callee?.name === "css") {
-        svelte = node;
+        css = node;
       }
     },
   });
-  return svelte;
+  return css;
+}
+
+function getPluginNodeResolve(baseNode: Node, plugins: Node): Node | undefined {
+  let pluginNodeResolveName: string | undefined = undefined;
+  simple(baseNode, {
+    ImportDeclaration(node) {
+      if ((node as any).source?.value === "@rollup/plugin-node-resolve") {
+        pluginNodeResolveName = (node as any).specifiers[0]?.local.name;
+      }
+    },
+  });
+
+  let resolve: Node | undefined = undefined;
+  simple(plugins, {
+    CallExpression(node) {
+      if ((node as any).callee?.name === pluginNodeResolveName) {
+        resolve = node;
+      }
+    },
+  });
+  return resolve;
 }
 
 // ----------------------------------------------------------------------
@@ -137,25 +184,25 @@ function manipulateInput(exportDefault: Node) {
   declaration?.properties?.push(createInputNode());
 }
 
-function manipulateOutput(exportDefault: Node, config: RollupConfig) {
+function manipulateOutput(exportDefault: Node, props: Props) {
   const { declaration } = exportDefault as any;
   declaration.properties = declaration?.properties.filter((p: any) => {
     return p.type !== "Property" || p.key?.name !== "output";
   });
-  declaration?.properties?.push(createOutputNode(config));
+  declaration?.properties?.push(createOutputNode(props));
 }
 
-function manipulateVirtualNode(plugins: Node, config: RollupConfig): Node {
+function manipulateVirtualNode(plugins: Node, props: Props): Node {
   const { value } = plugins as any;
   value.elements = value.elements.filter((e: any) => {
     return e.type !== "CallExpression" || e.callee?.name !== "virtual";
   });
-  const virtual = createVirtualNode(config);
+  const virtual = createVirtualNode(props);
   value.elements.push(virtual);
   return virtual;
 }
 
-function manipulateSvelteGenerate(svelte: Node, config: RollupConfig) {
+function manipulateSvelteGenerate(svelte: Node, props: Props) {
   const args = (svelte as any).arguments;
   let compilerOptions: Node | undefined = undefined;
   args
@@ -185,41 +232,65 @@ function manipulateSvelteGenerate(svelte: Node, config: RollupConfig) {
       (p.key?.name !== "generate" || p.key?.name !== "hydratable")
     );
   });
-  value.properties.push(createCompileOptionsGenerate(config.dom));
-  value.properties.push(createCompileOptionsHydratable(config.dom));
+  value.properties.push(createCompileOptionsGenerate(props.dom));
+  value.properties.push(createCompileOptionsHydratable(props.dom));
 }
 
 function manipulateCss(css: Node, outputFileName: string) {
-const args = (css as any).arguments;
-let output: Node | undefined = undefined;
-args
-  .filter((e: any) => e.type === "ObjectExpression")
-  .forEach((e: any) => {
-    const buf = e.properties.find((p: any) => p.key?.name === "output");
-    if (buf) output = buf;
-  });
-
-if (!output) {
-  output = createCssOutputNode(outputFileName);
-  if (args.length === 0) {
-    args.push({
-      type: "ObjectExpression",
-      properties: [],
+  const args = (css as any).arguments;
+  let output: Node | undefined = undefined;
+  args
+    .filter((e: any) => e.type === "ObjectExpression")
+    .forEach((e: any) => {
+      const buf = e.properties.find((p: any) => p.key?.name === "output");
+      if (buf) output = buf;
     });
+
+  if (!output) {
+    output = createCssOutputNode();
+    if (args.length === 0) {
+      args.push({
+        type: "ObjectExpression",
+        properties: [],
+      });
+    }
+    args[0].properties.push(output);
   }
-  args[0].properties.push(output);
-}
-const { value } = output as any;
+  const { value } = output as any;
+  value.raw = `"${outputFileName}"`;
   value.value = outputFileName;
-  value.raw = outputFileName;
 }
 
-function manipulateModuleContext(exportDefault: Node, config: RollupConfig) {
+function manipulateResolve(resolve: Node, props: Props) {
+  const args = (resolve as any).arguments;
+  let moduleDirectories: Node | undefined = undefined;
+  args
+    .filter((e: any) => e.type === "ObjectExpression")
+    .forEach((e: any) => {
+      const buf = e.properties.find(
+        (p: any) => p.key?.name === "moduleDirectories"
+      );
+      if (buf) moduleDirectories = buf;
+    });
+
+  if (!moduleDirectories) {
+    moduleDirectories = createModuleDirectories(props);
+    if (args.length === 0) {
+      args.push({
+        type: "ObjectExpression",
+        properties: [],
+      });
+    }
+    args[0].properties.push(moduleDirectories);
+  }
+}
+
+function manipulateModuleContext(exportDefault: Node, props: Props) {
   const { declaration } = exportDefault as any;
   declaration.properties = declaration?.properties.filter((p: any) => {
     return p.type !== "Property" || p.key?.name !== "moduleContext";
   });
-  declaration?.properties?.push(createModuleContextNode(config));
+  declaration?.properties?.push(createModuleContextNode(props));
 }
 
 function manipulateWatch(exportDefault: Node) {
@@ -252,7 +323,7 @@ function createInputNode(): Node {
   } as unknown as Node;
 }
 
-function createOutputNode(config: RollupConfig): Node {
+function createOutputNode(props: Props): Node {
   return {
     type: "Property",
     method: false,
@@ -276,8 +347,8 @@ function createOutputNode(config: RollupConfig): Node {
           },
           value: {
             type: "Literal",
-            value: true,
-            raw: "true",
+            value: props.debug ? "inline" : false,
+            raw: props.debug ? '"inline"' : false,
           },
           kind: "init",
         },
@@ -324,7 +395,11 @@ function createOutputNode(config: RollupConfig): Node {
           },
           value: {
             type: "Identifier",
-            name: `"${path.resolve(config.outputDir) + "/bundle.js"}"`,
+            name: `"${path.join(
+              props.outputAbsDirPath,
+              props.svelteRelativeFilePath,
+              "/bundle.js"
+            )}"`,
           },
           kind: "init",
         },
@@ -352,7 +427,31 @@ function createCompilerOptionsNode(): Node {
   } as unknown as Node;
 }
 
-function createCssOutputNode(outputFileName: string): Node {
+function createModuleDirectories(props: Props): Node {
+  return {
+    type: "Property",
+    method: false,
+    shorthand: false,
+    computed: false,
+    key: {
+      type: "Identifier",
+      name: "moduleDirectories",
+    },
+    value: {
+      type: "ArrayExpression",
+      elements: [
+        {
+          type: "Literal",
+          value: `${path.join(props.svelteProjectAbsDirPath, "/node_modules")}`,
+          raw: `"${path.join(props.svelteProjectAbsDirPath, "/node_modules")}"`,
+        },
+      ],
+    },
+    kind: "init",
+  } as unknown as Node;
+}
+
+function createCssOutputNode(): Node {
   return {
     type: "Property",
     method: false,
@@ -363,8 +462,8 @@ function createCssOutputNode(outputFileName: string): Node {
       name: "output",
     },
     value: {
-      type: "Identifier",
-      name: `"${outputFileName}"`,
+      type: "Literal",
+      value: "",
     },
     kind: "init",
   } as unknown as Node;
@@ -406,7 +505,7 @@ function createCompileOptionsHydratable(dom: boolean): Node {
   } as unknown as Node;
 }
 
-function createModuleContextNode(config: RollupConfig) {
+function createModuleContextNode(props: Props) {
   return {
     type: "Property",
     method: false,
@@ -418,17 +517,21 @@ function createModuleContextNode(config: RollupConfig) {
     },
     value: {
       type: "Identifier",
-      name: `(id) => { global.kvelte.dependencies["${config.inputSvelteFilePath}"].push(id); }`,
+      name: `(id) => { global.kvelte["${props.svelteRelativeFilePath}"].dependencies.push(id); }`,
     },
     kind: "init",
   };
 }
 
-function createVirtualNode(config: RollupConfig): Node {
-  const createVirtualFile = (config: RollupConfig) => {
-    if (config.dom) {
+function createVirtualNode(props: Props): Node {
+  const createVirtualFile = () => {
+    const filePath = path.join(
+      props.svelteProjectAbsDirPath,
+      props.svelteRelativeFilePath
+    );
+    if (props.dom) {
       return `
-      import App from '${config.inputSvelteFilePath}';
+      import App from '${filePath}';
       const app = new App({
         target: document.body,
         props: __KVELTE_PROPS__,
@@ -437,7 +540,10 @@ function createVirtualNode(config: RollupConfig): Node {
       export default app;
     `;
     }
-    return `import App from '${config.inputSvelteFilePath}';`;
+    return `
+    import App from '${filePath}';
+    global.kvelte["${props.svelteRelativeFilePath}"].ssr = App.render().html;
+    `;
   };
 
   return {
@@ -461,7 +567,7 @@ function createVirtualNode(config: RollupConfig): Node {
             },
             value: {
               type: "Identifier",
-              name: `\`${createVirtualFile(config)}\``,
+              name: `\`${createVirtualFile()}\``,
             },
             kind: "init",
           },

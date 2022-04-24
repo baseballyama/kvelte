@@ -6,86 +6,79 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
-import virtual from "@rollup/plugin-virtual";
-
+import virtual from '@rollup/plugin-virtual';
 const production = !process.env.ROLLUP_WATCH;
-
 function serve() {
-	let server;
-
-	function toExit() {
-		if (server) server.kill(0);
-	}
-
-	return {
-		writeBundle() {
-			if (server) return;
-			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
-				stdio: ['ignore', 'inherit', 'inherit'],
-				shell: true
-			});
-
-			process.on('SIGTERM', toExit);
-			process.on('exit', toExit);
-		}
-	};
+    let server;
+    function toExit() {
+        if (server)
+            server.kill(0);
+    }
+    return {
+        writeBundle() {
+            if (server)
+                return;
+            server = require('child_process').spawn('npm', [
+                'run',
+                'start',
+                '--',
+                '--dev'
+            ], {
+                stdio: [
+                    'ignore',
+                    'inherit',
+                    'inherit'
+                ],
+                shell: true
+            });
+            process.on('SIGTERM', toExit);
+            process.on('exit', toExit);
+        }
+    };
 }
-
-const dummy1 = {
-  plugins: "abc",
-};
-
+const dummy1 = { plugins: 'abc' };
 export default {
-  input: "src/main.ts",
-  output: {
-    sourcemap: true,
-    format: "iife",
-    name: "app",
-    file: "public/build/bundle.js",
-  },
-  plugins: [
-    virtual({
-      main: '',
-    }),
-    svelte({
-      preprocess: sveltePreprocess({ sourceMap: !production }),
-    }),
-    // we'll extract any component CSS out into
-    // a separate file - better for performance
-    css(),
-
-    // If you have external dependencies installed from
-    // npm, you'll most likely need these plugins. In
-    // some cases you'll need additional configuration -
-    // consult the documentation for details:
-    // https://github.com/rollup/plugins/tree/master/packages/commonjs
-    resolve({
-      browser: true,
-      dedupe: ["svelte"],
-    }),
-    commonjs(),
-    typescript({
-      sourceMap: !production,
-      inlineSources: !production,
-    }),
-
-    // In dev mode, call `npm run start` once
-    // the bundle has been generated
-    !production && serve(),
-
-    // Watch the `public` directory and refresh the
-    // browser on changes when not in production
-    !production && livereload("public"),
-
-    // If we're building for production (npm run build
-    // instead of npm run dev), minify
-    production && terser(),
-  ],
-  watch: {
-    clearScreen: false,
-  },
+    plugins: [
+        svelte({
+            preprocess: sveltePreprocess({ sourceMap: !production }),
+            compilerOptions: {
+                generate: "dom",
+                hydratable: true
+            }
+        }),
+        css({ output: 'bundle.css' }),
+        resolve({
+            browser: true,
+            dedupe: ['svelte'],
+            moduleDirectories: ['test/resources/rollup/success-no-compilerOptions/node_modules']
+        }),
+        commonjs(),
+        typescript({
+            sourceMap: !production,
+            inlineSources: !production
+        }),
+        !production && serve(),
+        !production && livereload('public'),
+        production && terser(),
+        virtual({
+            main: `
+      import App from 'test/resources/rollup/success-no-compilerOptions/input/index.svelte';
+      const app = new App({
+        target: document.body,
+        props: __KVELTE_PROPS__,
+        hydrate: true
+      });
+      export default app;
+    `
+        })
+    ],
+    input: 'main',
+    output: {
+        sourcemap: false,
+        format: 'iife',
+        name: 'app',
+        file: "test/resources/rollup/success-no-compilerOptions/output/rollup.config.js/input/index.svelte/bundle.js"
+    },
+    moduleContext: (id) => { global.kvelte["./input/index.svelte"].dependencies.push(id); }
 };
-
-const dummy2 = {
-  plugins: "abc",
-};
+const dummy2 = { plugins: 'abc' };

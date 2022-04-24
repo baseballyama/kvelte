@@ -36,7 +36,6 @@ function serve() {
         }
     };
 }
-const dummy1 = { plugins: 'abc' };
 export default {
     plugins: [
         svelte({
@@ -50,7 +49,7 @@ export default {
         resolve({
             browser: true,
             dedupe: ['svelte'],
-            moduleDirectories: ['test/resources/rollup/success/node_modules']
+            moduleDirectories: ['/Users/baseballyama/Desktop/git/kvelte/compiler/test/resources/temp/1650810073285/dom/node_modules']
         }),
         commonjs(),
         typescript({
@@ -62,7 +61,7 @@ export default {
         production && terser(),
         virtual({
             main: `
-      import App from 'test/resources/rollup/success/input/index.svelte';
+      import App from '/Users/baseballyama/Desktop/git/kvelte/compiler/test/resources/temp/1650810073285/dom/src/App.svelte';
       const app = new App({
         target: document.body,
         props: __KVELTE_PROPS__,
@@ -77,8 +76,7 @@ export default {
         sourcemap: false,
         format: 'iife',
         name: 'app',
-        file: "test/resources/rollup/success/output/rollup.config.js/input/index.svelte/bundle.js"
+        file: "/Users/baseballyama/Desktop/git/kvelte/compiler/test/resources/temp/1650810073285/dom/bundle.js"
     },
-    moduleContext: (id) => { global.kvelte["./input/index.svelte"].dependencies.push(id); }
+    moduleContext: (id) => { global.kvelte["/Users/baseballyama/Desktop/git/kvelte/compiler/test/resources/temp/1650810073285/dom/src/App.svelte"].dependencies.push(id); }
 };
-const dummy2 = { plugins: 'abc' };

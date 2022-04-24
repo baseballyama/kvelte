@@ -5,7 +5,6 @@ const server: FastifyInstance = Fastify({});
 
 server.get<{ Body: { path: string } }>("/", async (request, reply) => {
   const { path } = request.body;
-  console.log(path);
   reply.type("application/json").code(200).send({ message: "pong" });
 });
 

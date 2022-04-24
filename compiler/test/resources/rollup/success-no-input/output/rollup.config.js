@@ -49,7 +49,8 @@ export default {
         css({ output: 'bundle.css' }),
         resolve({
             browser: true,
-            dedupe: ['svelte']
+            dedupe: ['svelte'],
+            moduleDirectories: ['test/resources/rollup/node_modules']
         }),
         commonjs(),
         typescript({
@@ -73,11 +74,11 @@ export default {
     ],
     input: 'main',
     output: {
-        sourcemap: true,
+        sourcemap: false,
         format: 'iife',
         name: 'app',
-        file: "/Users/baseballyama/Desktop/git/kvelte/compiler/test/resources/rollup/output/bundle.js"
+        file: "/Users/baseballyama/Desktop/git/kvelte/compiler/test/resources/rollup/bundle.js"
     },
-    moduleContext: (id) => { global.kvelte.dependencies["./test/resources/rollup/input/index.svelte"].push(id); }
+    moduleContext: (id) => { global.kvelte["./test/resources/rollup/input/index.svelte"].dependencies.push(id); }
 };
 const dummy2 = { plugins: 'abc' };

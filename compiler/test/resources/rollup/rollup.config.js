@@ -40,7 +40,6 @@ const dummy1 = { plugins: 'abc' };
 export default {
     plugins: [
         svelte({
-            preprocess: sveltePreprocess({ sourceMap: !production }),
             compilerOptions: {
                 generate: "dom",
                 hydratable: true
@@ -50,7 +49,7 @@ export default {
         resolve({
             browser: true,
             dedupe: ['svelte'],
-            moduleDirectories: ['test/resources/rollup/success/node_modules']
+            moduleDirectories: ['test/resources/rollup/node_modules']
         }),
         commonjs(),
         typescript({
@@ -62,7 +61,7 @@ export default {
         production && terser(),
         virtual({
             main: `
-      import App from 'test/resources/rollup/success/input/index.svelte';
+      import App from './test/resources/rollup/input/index.svelte';
       const app = new App({
         target: document.body,
         props: __KVELTE_PROPS__,
@@ -77,8 +76,8 @@ export default {
         sourcemap: false,
         format: 'iife',
         name: 'app',
-        file: "test/resources/rollup/success/output/rollup.config.js/input/index.svelte/bundle.js"
+        file: "/Users/baseballyama/Desktop/git/kvelte/compiler/test/resources/rollup/success-no-compilerOptions2/output/rollup.config.js/Users/baseballyama/Desktop/git/kvelte/compiler/test/resources/rollup/test/resources/rollup/input/index.svelte/bundle.js"
     },
-    moduleContext: (id) => { global.kvelte["./input/index.svelte"].dependencies.push(id); }
+    moduleContext: (id) => { global.kvelte["./test/resources/rollup/input/index.svelte"].dependencies.push(id); }
 };
 const dummy2 = { plugins: 'abc' };

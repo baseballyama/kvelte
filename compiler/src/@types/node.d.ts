@@ -1,7 +1,8 @@
 declare global {
   var kvelte: {
-    dependencies: {
-      [path: string]: string[];
+    [path: string]: {
+      dependencies: string[],
+      ssr: string,
     };
   };
 }
