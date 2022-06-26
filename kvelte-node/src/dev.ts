@@ -49,19 +49,29 @@ const pluginKvelte = () => ({
         );
         if (queryProps) {
           const mod = await server.ssrLoadModule(path);
-          const ssr = mod.default.render(JSON.parse(propsStr || "{}"));
-          res.setHeader("Content-Type", "text/html");
-          res.setHeader("Access-Control-Allow-Origin", "*");
-          res.end(buildHTML(path, ssr.html, ssr.css.code, ssr.head, propsStr));
+          try {
+            const ssr = mod.default.render(JSON.parse(propsStr || "{}"));
+            res.setHeader("Content-Type", "text/html");
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.end(
+              buildHTML(path, ssr.html, ssr.css.code, ssr.head, propsStr)
+            );
+          } catch (e) {
+            console.error(e);
+          }
         } else {
           next();
         }
       } else if (path.endsWith(".svelte.js")) {
         req.url = `${path.replace(/.svelte.js$/, ".svelte")}`;
-        const dom = await server.transformRequest(req.url);
-        res.setHeader("Content-Type", "application/javascript");
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.end(dom?.code ?? "");
+        try {
+          const dom = await server.transformRequest(req.url);
+          res.setHeader("Content-Type", "application/javascript");
+          res.setHeader("Access-Control-Allow-Origin", "*");
+          res.end(dom?.code ?? "");
+        } catch (e) {
+          console.error(e);
+        }
       } else {
         next();
       }
