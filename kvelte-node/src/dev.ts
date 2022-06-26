@@ -3,7 +3,7 @@ import preprocess from "svelte-preprocess";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import fs from "fs";
 
-const getIndexHTML = (
+const buildHTML = (
   path: string,
   html: string,
   css: string,
@@ -35,56 +35,53 @@ const getIndexHTML = (
 </html>`;
 };
 
-(async () => {
-  const pluginKvelte = () => ({
-    name: "configure-server",
-    configureServer(server: vite.ViteDevServer) {
-      server.middlewares.use(async (req, res, next) => {
-        const url = new URL(req.url ?? "");
-        const path = url.pathname;
-        if (path.startsWith("/pages/") && path.endsWith(".svelte")) {
-          const query = url.search?.substring(1) || "";
-          const queryProps = query
-            .split("&")
-            .find((q) => q.startsWith("props="));
-          const propsStr = decodeURIComponent(
-            queryProps?.replace("props=", "") || "{}"
-          );
-          if (queryProps) {
-            const mod = await server.ssrLoadModule(path);
-            const ssr = mod.default.render(JSON.parse(propsStr || "{}"));
-            res.setHeader("Content-Type", "text/html");
-            res.setHeader("Access-Control-Allow-Origin", "*");
-            res.end(
-              getIndexHTML(path, ssr.html, ssr.css.code, ssr.head, propsStr)
-            );
-            return;
-          }
+const pluginKvelte = () => ({
+  name: "configure-server",
+  configureServer(server: vite.ViteDevServer) {
+    server.middlewares.use(async (req, res, next) => {
+      const url = new URL(`http://dummy${req.url ?? ""}`);
+      const path = url.pathname;
+      if (path.startsWith("/pages/") && path.endsWith(".svelte")) {
+        const query = url.search?.substring(1) || "";
+        const queryProps = query.split("&").find((q) => q.startsWith("props="));
+        const propsStr = decodeURIComponent(
+          queryProps?.replace("props=", "") || "{}"
+        );
+        if (queryProps) {
+          const mod = await server.ssrLoadModule(path);
+          const ssr = mod.default.render(JSON.parse(propsStr || "{}"));
+          res.setHeader("Content-Type", "text/html");
+          res.setHeader("Access-Control-Allow-Origin", "*");
+          res.end(buildHTML(path, ssr.html, ssr.css.code, ssr.head, propsStr));
+        } else {
           next();
         }
-        if (path.endsWith(".svelte.js")) {
-          req.url = `${path.replace(/.svelte.js$/, ".svelte")}`;
-          const dom = await server.transformRequest(req.url);
-          res.setHeader("Content-Type", "application/javascript");
-          res.setHeader("Access-Control-Allow-Origin", "*");
-          res.end(dom?.code ?? "");
-          return;
-        }
+      } else if (path.endsWith(".svelte.js")) {
+        req.url = `${path.replace(/.svelte.js$/, ".svelte")}`;
+        const dom = await server.transformRequest(req.url);
+        res.setHeader("Content-Type", "application/javascript");
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.end(dom?.code ?? "");
+      } else {
         next();
-      });
-    },
-  });
+      }
+    });
+  },
+});
 
-  if (
-    !fs.existsSync("/Users/baseballyama/Desktop/git/kvelte/kvelte-step2/assets")
-  ) {
+function createAssertsSymlink() {
+  const cwd = process.cwd();
+  if (!fs.existsSync(`${cwd}/assets`)) {
     fs.symlinkSync(
-      "/Users/baseballyama/Desktop/git/kvelte/kvelte-step2/src/main/resources/kvelte/assets",
-      "/Users/baseballyama/Desktop/git/kvelte/kvelte-step2/assets",
+      `${cwd}/src/main/resources/kvelte/assets`,
+      `${cwd}/assets`,
       "dir"
     );
   }
+}
 
+(async () => {
+  createAssertsSymlink();
   const server = await vite.createServer({
     plugins: [
       svelte({
@@ -99,10 +96,12 @@ const getIndexHTML = (
       strictPort: true,
     },
   });
+
+  const { logger } = server.config;
   if (!server.httpServer) {
-    throw new Error("HTTP server not available");
+    logger.error("HTTP server not available");
+    process.exit(1);
   }
   await server.listen();
-  const info = server.config.logger.info;
-  info(`vite server running at: ${server.config.server.port}\n`);
+  logger.info(`vite server running at: ${server.config.server.port}\n`);
 })();

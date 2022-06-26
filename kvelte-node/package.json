@@ -1,5 +1,5 @@
 {
-  "name": "kvelte",
+  "name": "kvelte-node",
   "version": "0.0.1",
   "description": "The fastest way to build UI with Svelte for Kotlin users",
   "repository": {
@@ -21,7 +21,11 @@
   "bin": {
     "kvelte": "./cli.js"
   },
+  "files": [
+    "./*.js"
+  ],
   "scripts": {
+    "dev": "tsc --watch",
     "build": "tsc"
   },
   "dependencies": {
@@ -34,8 +38,5 @@
     "svelte-preprocess": "^4.9.8",
     "typescript": "^4.7.4",
     "vite": "^2.9.9"
-  },
-  "exports": {
-    "./package.json": "./package.json"
   }
 }
