@@ -1,6 +1,21 @@
 {
   "name": "kvelte",
   "version": "0.0.1",
+  "description": "The fastest way to build UI with Svelte for Kotlin users",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:baseballyama/kvelte.git"
+  },
+  "keywords": [
+    "svelte",
+    "kotlin"
+  ],
+  "author": "baseballyama",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/baseballyama/kvelte/issues"
+  },
+  "homepage": "https://github.com/baseballyama/kvelte/#readme",
   "type": "module",
   "public": true,
   "bin": {
