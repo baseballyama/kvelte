@@ -11,6 +11,9 @@ git tag -a kvelte-node@0.0.1 -m "version kvelte-node@0.0.1"
 git push origin kvelte-node@0.0.1
 ```
 
+### npm page
+https://www.npmjs.com/package/kvelte-node
+
 # dev tips
 
 ### linking the package at local

@@ -1,4 +1,0 @@
-## Arguments
-
-### --parallel=n
-### --dev
