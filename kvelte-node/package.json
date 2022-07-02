@@ -1,6 +1,6 @@
 {
   "name": "kvelte-node",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "The fastest way to build UI with Svelte for Kotlin users",
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/baseballyama/kvelte/issues"
   },
-  "homepage": "https://github.com/baseballyama/kvelte/#readme",
+  "homepage": "https://github.com/baseballyama/kvelte/tree/main/kvelte-node#readme",
   "type": "module",
   "public": true,
   "bin": {
