@@ -1,10 +1,11 @@
 plugins {
-    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.7.0"
     id("com.vanniktech.maven.publish") version "0.19.0"
 }
 
 group = "tokyo.baseballyama"
-version = "0.0.1"
+version = "0.0.2"
+java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
@@ -12,25 +13,19 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.3")
 
-    implementation("io.ktor:ktor-server-core:1.6.8")
-    implementation("io.ktor:ktor-server-netty:1.6.8")
-    implementation("io.ktor:ktor-websockets:1.6.8")
-    implementation("org.slf4j:slf4j-nop:1.7.36")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
+    implementation("ch.qos.logback:logback-classic:1.2.11")
+    implementation("org.graalvm.sdk:graal-sdk:22.1.0.1")
+    implementation("org.graalvm.js:js-scriptengine:22.1.0.1")
+    implementation("org.graalvm.js:js:22.1.0.1")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.5.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
 }
 
 tasks.withType<Jar> {
     enabled = true
-}
-
-tasks.named("build") {
-    doFirst {
-        println("Building the application")
-    }
 }
 
 apply {
@@ -44,31 +39,10 @@ buildscript {
     dependencies {
         classpath("com.vanniktech:gradle-maven-publish-plugin:0.19.0")
     }
-
-
 }
 
 plugins.withId("com.vanniktech.maven.publish") {
     mavenPublish {
         sonatypeHost = com.vanniktech.maven.publish.SonatypeHost.S01
-    }
-}
-
-tasks.test {
-    // JUnit platform を使う設定
-    useJUnitPlatform()
-
-    testLogging {
-        // テスト時の標準出力と標準エラー出力を表示する
-        showStandardStreams = true
-        // イベントを出力する (TestLogEvent)
-        events = setOf(
-            org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
-        )
-        // 例外発生時の出力設定 (TestExceptionFormat)
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
     }
 }

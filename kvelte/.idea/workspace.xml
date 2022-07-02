@@ -5,20 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="17d6cdfc-fb77-446a-8f46-0d72eb49d6c8" name="変更" comment="">
-      <change beforePath="$PROJECT_DIR$/../compiler/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../compiler/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compiler/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../compiler/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compiler/src/@types/global.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../compiler/src/@types/global.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compiler/src/compile.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../compiler/src/compile.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compiler/src/copy.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compiler/src/rollup.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../compiler/src/rollup.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compiler/src/server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../compiler/src/server.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compiler/test/copy.spec.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compiler/test/resources/rollup/success/output/rollup.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../compiler/test/resources/rollup/success/output/rollup.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compiler/test/resources/svelte-sample/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../compiler/test/resources/svelte-sample/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compiler/test/resources/svelte-sample/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../compiler/test/resources/svelte-sample/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compiler/test/resources/svelte-sample/rollup.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/../compiler/test/resources/svelte-sample/rollup.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../compiler/test/rollup.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../compiler/test/rollup.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MEMO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../kvelte-node/MEMO.md" beforeDir="false" afterPath="$PROJECT_DIR$/../kvelte-node/MEMO.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RELEASE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/Command.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/Constants.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/DependencyTree.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/Kvelte.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/KvelteBuilder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/KvelteBuilder.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/KvelteConfig.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/KvelteConfig.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/KvelteException.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/KvelteException.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/RollupConfig.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/SvelteBuilder.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/SvelteCache.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/dev/hmr/FileWatcher.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/dev/hmr/Hmr.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/dev/hmr/Websocket.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/utils/FileUtils.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/MergeRollupConfig.mjs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/kotlin/tokyo/baseballyama/kvelte/DependencyTreeTest.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/js-imports.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +56,29 @@
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="kvelte" type="f1a62948:ProjectNode" />
               </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="kvelte" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="kvelte" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="kvelte" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="publishing" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="kvelte" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="verification" type="c8890929:TasksNode$1" />
+              </path>
             </expand>
             <select />
           </tree_state>
@@ -54,8 +90,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JUnit5 Test Class" />
-        <option value="Kotlin Class" />
         <option value="Kotlin Data Class" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -71,19 +107,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.detected.package.tslint" value="true" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="node.js.selected.package.tslint" value="(autodetect)" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;last_opened_file_path&quot;: &quot;/Users/baseballyama/Desktop/git/kvelte/kvelte&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte" />
+      <recent name="$PROJECT_DIR$/src/main/kotlin/tokyo/baseballyama/kvelte/trush" />
+    </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="tokyo.baseballyama.kvelte.trush" />
       <recent name="tokyo.baseballyama.kvelte.dev.hmr" />
       <recent name="tokyo.baseballyama.kvelte.utils" />
     </key>
@@ -94,30 +132,7 @@
       <recent name="tokyo.baseballyama.kvelte" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.DependencyTreeTest.getDependencies">
-    <configuration name="DependencyTreeTest.getDependencies" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" value="" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value=":test" />
-            <option value="--tests" />
-            <option value="&quot;tokyo.baseballyama.kvelte.DependencyTreeTest.getDependencies&quot;" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="Gradle.kvelte [publishMavenPublicationToMavenLocal]">
     <configuration name="kvelte [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -139,33 +154,103 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
-    <configuration name="CommandKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="tokyo.baseballyama.kvelte.CommandKt" />
-      <module name="kvelte.main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="kvelte [generateMetadataFileForMavenPublication]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="generateMetadataFileForMavenPublication" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
     </configuration>
-    <configuration name="KvelteKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="tokyo.baseballyama.kvelte.KvelteKt" />
-      <module name="kvelte.main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="kvelte [generatePomFileForMavenPublication]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="generatePomFileForMavenPublication" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
     </configuration>
-    <configuration name="WebsocketKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="tokyo.baseballyama.kvelte.WebsocketKt" />
-      <module name="kvelte.main" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
+    <configuration name="kvelte [publishMavenPublicationToMavenLocal]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="publishMavenPublicationToMavenLocal" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
     </configuration>
+    <configuration name="kvelte [publish]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="publish" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Gradle.kvelte [generateMetadataFileForMavenPublication]" />
+      <item itemvalue="Gradle.kvelte [generatePomFileForMavenPublication]" />
+      <item itemvalue="Gradle.kvelte [publishMavenPublicationToMavenLocal]" />
+      <item itemvalue="Gradle.kvelte [publish]" />
+      <item itemvalue="Gradle.kvelte [build]" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.DependencyTreeTest.getDependencies" />
-        <item itemvalue="Kotlin.WebsocketKt" />
-        <item itemvalue="Kotlin.KvelteKt" />
-        <item itemvalue="Kotlin.CommandKt" />
+        <item itemvalue="Gradle.kvelte [publishMavenPublicationToMavenLocal]" />
+        <item itemvalue="Gradle.kvelte [publish]" />
+        <item itemvalue="Gradle.kvelte [generateMetadataFileForMavenPublication]" />
+        <item itemvalue="Gradle.kvelte [generatePomFileForMavenPublication]" />
         <item itemvalue="Gradle.kvelte [build]" />
       </list>
     </recent_temporary>
