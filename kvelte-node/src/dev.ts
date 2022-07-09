@@ -15,7 +15,7 @@ const buildHTML = (
   <head>
     <script type="module" src="http://localhost:3000/@vite/client"></script>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/assets/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>${css}</style>
     ${head}
@@ -48,8 +48,8 @@ const pluginKvelte = () => ({
           queryProps?.replace("props=", "") || "{}"
         );
         if (queryProps) {
-          const mod = await server.ssrLoadModule(path);
           try {
+            const mod = await server.ssrLoadModule(path);
             const ssr = mod.default.render(JSON.parse(propsStr || "{}"));
             res.setHeader("Content-Type", "text/html");
             res.setHeader("Access-Control-Allow-Origin", "*");
@@ -58,6 +58,12 @@ const pluginKvelte = () => ({
             );
           } catch (e) {
             console.error(e);
+            res.statusCode = 500;
+            if (e instanceof Error) {
+              res.end(`<pre>${e.message}\n${e.stack}</pre>`);
+            } else {
+              res.end('Unexpected error occurred');
+            }
           }
         } else {
           next();
@@ -79,19 +85,7 @@ const pluginKvelte = () => ({
   },
 });
 
-function createAssertsSymlink() {
-  const cwd = process.cwd();
-  if (!fs.existsSync(`${cwd}/assets`)) {
-    fs.symlinkSync(
-      `${cwd}/src/main/resources/kvelte/assets`,
-      `${cwd}/assets`,
-      "dir"
-    );
-  }
-}
-
 (async () => {
-  createAssertsSymlink();
   const server = await vite.createServer({
     plugins: [
       svelte({

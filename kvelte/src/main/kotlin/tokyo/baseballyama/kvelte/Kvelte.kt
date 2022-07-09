@@ -7,7 +7,7 @@ class Kvelte private constructor(private val config: KvelteConfig) {
     companion object {
         private lateinit var instance: Kvelte
         fun create(config: KvelteConfig): Kvelte {
-            if (::instance.isInitialized) throw KvelteException("Do not create multiple instances of Kvelte")
+            if (::instance.isInitialized) return instance
             instance = Kvelte(config)
             return instance
         }
@@ -22,7 +22,7 @@ class Kvelte private constructor(private val config: KvelteConfig) {
     }
 
 
-    fun loadPage(path: String, props: Map<String, *>): String {
+    fun loadPage(path: String, props: Map<String, *> = emptyMap<String, String>()): String {
         return loader.loadPage(path, props)
     }
 

@@ -11,11 +11,26 @@ import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
+import kotlin.io.path.createSymbolicLinkPointingTo
+import kotlin.system.exitProcess
 
 internal class KvelteLoaderDev(config: KvelteConfig) : KvelteLoader(config) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     init {
+
+        fun createResourcesSymLink() {
+            val target = File("./src/main/resources/kvelte/assets").absoluteFile
+            val link = File("./assets").absoluteFile
+            if (!link.exists() && target.exists()) {
+                link.toPath().createSymbolicLinkPointingTo(target.toPath())
+            }
+        }
+
+        createResourcesSymLink()
+        this.startVite()
+    }
+    private fun startVite() {
         val pb = ProcessBuilder("npm", "run", "dev")
         pb.directory(File("./src/main/resources/kvelte"))
         val p = pb.start()
@@ -47,9 +62,15 @@ internal class KvelteLoaderDev(config: KvelteConfig) : KvelteLoader(config) {
         val connection = url.openConnection() as HttpURLConnection
         try {
             val statusCode = connection.responseCode
-            if (statusCode == HttpURLConnection.HTTP_OK) {
-                return connection.inputStream.bufferedReader().use(BufferedReader::readText)
+            return if (statusCode == HttpURLConnection.HTTP_OK) {
+                connection.inputStream.bufferedReader().use(BufferedReader::readText)
+            } else {
+                connection.errorStream.bufferedReader().use(BufferedReader::readText)
             }
+        } catch(e: ConnectException) {
+            e.printStackTrace()
+            connection.disconnect()
+            exitProcess(1)
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
