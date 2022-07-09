@@ -37,8 +37,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
-    // implementation("tokyo.baseballyama:kvelte:0.0.3")
-    implementation(fileTree("../../kvelte/build/libs/kvelte-0.0.2.jar"))
+    implementation("tokyo.baseballyama:kvelte:0+")
     testImplementation(kotlin("test"))
 }
 
