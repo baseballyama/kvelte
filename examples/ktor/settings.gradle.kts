@@ -1,2 +1,2 @@
-rootProject.name = "demo"
+rootProject.name = "kvelte-demo"
 

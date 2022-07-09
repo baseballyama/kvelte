@@ -7,8 +7,8 @@ plugins {
     id("application")
 }
 
-group = "tokyo.baseballyama.kvelte"
-version = "0.0.2"
+group = "tokyo.baseballyama.kvelte.demo"
+version = "0.0.0"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
@@ -35,7 +35,7 @@ dependencies {
     implementation("io.ktor:ktor-server-double-receive:$ktorVersion")
     implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
-    
+
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
@@ -71,5 +71,6 @@ application {
 tasks.shadowJar {
     archiveBaseName.set("kvelte-demo")
     archiveClassifier.set("")
+    archiveVersion.set("")
     mergeServiceFiles()
 }

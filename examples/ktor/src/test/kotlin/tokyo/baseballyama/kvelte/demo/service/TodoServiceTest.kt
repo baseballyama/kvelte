@@ -55,7 +55,7 @@ internal class TodoServiceTest {
     fun update() {
         val userId = UserID("1")
         TodoService.create(userId, TodoCreateModel("todo1"))
-        TodoService.update(userId, TodoUpdateModel(id = 1, text = "updated", done = true))
+        TodoService.update(userId, 1, TodoUpdateModel(text = "updated", done = true))
         val todos = TodoService.get(userId)
         Assertions.assertEquals(1, todos.size)
         Assertions.assertEquals(1, todos[0].id)
