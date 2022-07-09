@@ -8,6 +8,10 @@ import java.util.Scanner
 
 // ----------------------------------------------------------------------
 // heroku config:set GRADLE_TASK="build"
+
+// heroku buildpacks:add --index 1 heroku-community/apt
+// heroku run bash
+
 // ----------------------------------------------------------------------
 plugins {
     id("application")
@@ -15,8 +19,10 @@ plugins {
 
 tasks.named("build") {
     doFirst {
-        command("", listOf("node", "--version"))
-        command("", listOf("npm", "--version"))
+       // command("", listOf("node", "--version"))
+        // command("", listOf("npm", "--version"))
+
+        // curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
         command("./kvelte-node", listOf("npm", "run", "build"))
         command("./kvelte-node", listOf("npm", "link", "kvelte-node"))
         command("./kvelte", listOf("./gradlew", "build"))
