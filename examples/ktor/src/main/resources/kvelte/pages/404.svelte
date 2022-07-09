@@ -1,21 +1,14 @@
 <script lang="ts">
   import Layout from "../lib/layout/Layout.svelte";
-  import Counter from "../lib/Counter.svelte";
-  export let message: string;
 </script>
 
 <svelte:head>
-  <title>Kvelte - Home</title>
-  <meta name="description" content="Top page of Kvelte" />
+  <title>Kvelte - 404</title>
 </svelte:head>
 
 <Layout>
   <section>
-    <h1>Welcome to the {message} App!</h1>
-    <h2>
-      try editing <strong>src/main/resources/kvelte/pages/index.svelte</strong>
-    </h2>
-    <Counter />
+    <h1>Oops! Page Not Found</h1>
   </section>
 </Layout>
 

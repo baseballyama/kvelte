@@ -25,10 +25,17 @@ repositories {
     }
 }
 
+val ktorVersion = "2.0.2"
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("io.ktor:ktor-server-core:2.0.2")
-    implementation("io.ktor:ktor-server-netty:2.0.2")
+    implementation("io.ktor:ktor-server-core:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+    implementation("io.ktor:ktor-server-sessions:$ktorVersion")
+    implementation("io.ktor:ktor-server-double-receive:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+    
     implementation("ch.qos.logback:logback-classic:1.2.11")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")

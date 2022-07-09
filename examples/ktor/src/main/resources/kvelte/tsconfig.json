@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"importsNotUsedAsValues": "error",
+		"isolatedModules": true,
+		"preserveValueImports": true,
+		"rootDirs": [
+			"."
+		],
+		"lib": [
+			"esnext",
+			"DOM"
+		],
+		"moduleResolution": "node",
+		"module": "esnext",
+		"target": "esnext"
+	},
+	"include": [
+		"**/*.js",
+		"**/*.ts",
+		"**/*.svelte"
+	],
+}
