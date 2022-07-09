@@ -6,20 +6,28 @@
  */
 import java.util.Scanner
 
+// ----------------------------------------------------------------------
+// heroku config:set GRADLE_TASK="build"
+// ----------------------------------------------------------------------
 plugins {
     id("application")
 }
 
 tasks.named("build") {
     doFirst {
-        println("Hello, world!")
+        command("", listOf("node", "--version"))
+        command("", listOf("npm", "--version"))
         command("./kvelte-node", listOf("npm", "run", "build"))
+        command("./kvelte-node", listOf("npm", "link", "kvelte-node"))
         command("./kvelte", listOf("./gradlew", "build"))
+        command("./examples/ktor/src/main/resources/kvelte", listOf("npm", "i"))
+        command("./examples/ktor/src/main/resources/kvelte", listOf("npm", "link", "kvelte-node"))
         command("./examples/ktor", listOf("./gradlew", "build"))
     }
 }
 
 fun command(pwd: String, cmd: List<String>) {
+    println("START:" + cmd.joinToString(" "))
     val pb = ProcessBuilder(*cmd.toTypedArray())
     val kvelteDir = File(projectDir, pwd)
     println(kvelteDir.absolutePath)
@@ -29,6 +37,7 @@ fun command(pwd: String, cmd: List<String>) {
     printViteOutput(p.errorStream, ::println)
     p.waitFor()
     p.destroy()
+    println("END:" + cmd.joinToString(" "))
 }
 
 fun printViteOutput(inputStream: java.io.InputStream, func: (String) -> Unit) {
