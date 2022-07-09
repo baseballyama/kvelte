@@ -1,0 +1,1 @@
+web: java -jar examples/ktor/build/libs/kvelte-demo.jar --server.port=$PORT

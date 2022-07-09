@@ -41,8 +41,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
     implementation("tokyo.baseballyama:kvelte:0.0.2")
     testImplementation(kotlin("test"))
-
-
 }
 
 tasks.test {
