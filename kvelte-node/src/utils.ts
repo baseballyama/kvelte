@@ -1,4 +1,5 @@
 import fs from "fs";
+import fse from 'fs-extra';
 
 export function listFiles(dir: string): string[] {
   return fs
@@ -8,4 +9,8 @@ export function listFiles(dir: string): string[] {
         ? [`${dir}/${dirent.name}`]
         : listFiles(`${dir}/${dirent.name}`)
     );
+}
+
+export function copyFiles(srcPath: string, destPath: string) {
+  fse.copySync(srcPath, destPath, { overwrite: true })
 }

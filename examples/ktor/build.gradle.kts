@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("jvm") version "1.7.0"
     kotlin("plugin.serialization") version "1.7.0"
@@ -56,14 +54,15 @@ buildscript {
     }
 }
 
-tasks.withType<KotlinCompile> {
-    doFirst {
-        tokyo.baseballyama.kvelte.KvelteBuilder.build(project.projectDir)
-    }
+tasks.create("kvelte") {
+    tokyo.baseballyama.kvelte.KvelteBuilder.build(project.projectDir)
+}
+tasks.build {
+    this.dependsOn("kvelte")
 }
 
 application {
-    mainClass.set("tokyo.baseballyama.kvelte.demo.ControllerKt")
+    mainClass.set("tokyo.baseballyama.kvelte.demo.AppKt")
 }
 
 tasks.shadowJar {

@@ -52,9 +52,9 @@ internal class KvelteLoaderProd(private val config: KvelteConfig) : KvelteLoader
             <html lang="${this.config.lang}">
               <head>
                 <meta charset="UTF-8" />
-                <link rel="icon" href="/favicon.ico" />
+                <link rel="icon" href="/assets/favicon.ico" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <style>${ssrResult.css}</style>
+                <style>${ssrResult.css?.code ?: ""}</style>
                 ${ssrResult.head}
               </head>
               <body>
@@ -76,7 +76,11 @@ internal class KvelteLoaderProd(private val config: KvelteConfig) : KvelteLoader
         val paths = path.removePrefix("/").split("?").toMutableList().also {
             if (it.size > 1) it.removeLast()
         }.joinToString(separator = "?")
-        return this.getResources(".kvelte/dom/pages/${paths}.js") ?: ""
+        return if (paths.startsWith("chunks")) {
+            this.getResources(".kvelte/dom/${paths}") ?: ""
+        } else {
+            this.getResources(".kvelte/dom/pages/${paths}.js") ?: ""
+        }
     }
 
 

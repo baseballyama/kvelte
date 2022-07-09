@@ -61,7 +61,7 @@ fun main() {
         todoRoutes()
 
         routing {
-            static("assets") { files("assets") }
+            static("assets") { resources("assets") }
             get(".kvelte/{...}") {
                 call.response.header("Cache-Control", "public, max-age=86400")
                 call.respondBytes(

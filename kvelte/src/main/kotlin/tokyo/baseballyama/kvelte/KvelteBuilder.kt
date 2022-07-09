@@ -6,7 +6,6 @@ object KvelteBuilder {
     fun build(projectDir: File) {
         val pb = ProcessBuilder("npm", "run", "build")
         val kvelteDir = File(projectDir, "src/main/resources/kvelte")
-        println(kvelteDir.absolutePath)
         pb.directory(kvelteDir)
         val p = pb.start()
         Vite.printViteOutput(p.inputStream, ::println)

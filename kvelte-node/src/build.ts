@@ -4,11 +4,12 @@ import preprocess from "svelte-preprocess";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import virtual from "@rollup/plugin-virtual";
 import esbuild from "esbuild";
-import { listFiles } from "./utils.js";
+import { listFiles, copyFiles } from "./utils.js";
 import { OutputOptions } from "rollup";
 
 const cwd = process.cwd();
-const outDir = `${cwd}/../.kvelte`;
+const resources = `${cwd}/..`;
+const outDir = `${resources}/.kvelte`;
 
 function getSveltePages(): string[] {
   return listFiles("./pages").filter((file) => {
@@ -26,7 +27,7 @@ function getBuildOutputConfig(): OutputOptions {
   return {
     format: "esm",
     entryFileNames: "[name].js",
-    chunkFileNames: "chunks/[name]-[hash].js",
+    chunkFileNames: ".kvelte/chunks/[name]-[hash].js",
     assetFileNames: "assets/[name]-[hash][extname]",
   };
 }
@@ -35,6 +36,7 @@ function preBuild() {
   if (fs.existsSync(outDir)) fs.rmSync(outDir, { recursive: true });
   fs.mkdirSync(outDir);
   fs.symlinkSync(`${cwd}/node_modules`, `${outDir}/node_modules`, "dir");
+  copyFiles(`${cwd}/assets`, `${resources}/assets`);
 }
 
 async function buildDOM(sveltePages: string[]) {
@@ -127,6 +129,10 @@ function postBuild() {
   if (fs.existsSync("../.kvelte/dom/manifest.json")) {
     fs.rmSync("../.kvelte/dom/manifest.json");
   }
+
+  // TODO: remove redundant process
+  copyFiles("../.kvelte/dom/.kvelte", "../.kvelte/dom");
+  fs.rmSync("../.kvelte/dom/.kvelte", { recursive: true });
 }
 
 (async () => {
