@@ -7,6 +7,29 @@
 import java.util.Scanner
 
 // ----------------------------------------------------------------------
+// ** DO ONLY ONE TIME **
+//
+// sudo apt update && sudo apt upgrade
+// yes | sudo apt install openjdk-11-jdk
+// java -version
+// yes | sudo apt install nodejs
+// node -v
+// yes | sudo apt install npm
+// npm -v
+// sudo npm install n -g
+// sudo n stable
+// sudo apt purge -y nodejs npm
+// exec $SHELL -l
+
+// ** DO EVERY TIME **
+// rm -rf ./kvelte
+// git clone https://github.com/baseballyama/kvelte.git
+// cd kvelte
+// ./gradlew build
+// java -jar examples/ktor/build/libs/kvelte-demo.jar
+
+
+
 // heroku config:set GRADLE_TASK="build"
 // heroku buildpacks:add --index 1 heroku-community/apt
 // heroku run bash
