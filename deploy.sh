@@ -1,13 +1,6 @@
 #!/bin/sh
 set -eu
 
-echo "clone kvelte..."
-cd ..
-rm -rf kvelte
-git clone https://github.com/baseballyama/kvelte.git
-cd kvelte
-echo "cloned kvelte"
-
 echo "build kvelte-node..."
 cd ./kvelte-node
 npm i
