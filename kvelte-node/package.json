@@ -1,6 +1,6 @@
 {
   "name": "kvelte-node",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "The fastest way to build UI with Svelte for Kotlin users",
   "repository": {
     "type": "git",
