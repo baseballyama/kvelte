@@ -34,7 +34,7 @@ Svelteはコンパイラです。Svelteファイルは仮想DOMを持たない�
 
 # デモ
 
-https://kvelte.baseballyama.tokyo/todos
+https://kvelte.baseballyama.tokyo
 
 
 # 前提条件
