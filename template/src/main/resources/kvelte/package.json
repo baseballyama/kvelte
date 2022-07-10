@@ -1,0 +1,17 @@
+{
+  "name": "kvelte-template",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "build": "kvelte build",
+    "dev": "kvelte dev"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "svelte": "^3.48.0"
+  },
+  "devDependencies": {
+    "kvelte-node": "^0.1.0"
+  }
+}

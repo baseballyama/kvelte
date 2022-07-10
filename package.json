@@ -1,8 +1,0 @@
-{
-  "name": "heroku-deploy",
-  "author": "baseballyama",
-  "license": "MIT",
-  "engines": {
-    "node": "18.x"
-  }
-}

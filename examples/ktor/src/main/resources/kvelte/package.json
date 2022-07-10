@@ -15,6 +15,7 @@
     "svelte": "^3.48.0"
   },
   "devDependencies": {
+    "kvelte-node": "*",
     "@types/lodash": "^4.14.182"
   }
 }
