@@ -27,4 +27,4 @@ echo "built kvelte-demo"
 
 echo "start kvelte-demo"
 sudo kill -9 $(lsof -t -i:8080) || echo ''
-nohup java -jar examples/ktor/build/libs/kvelte-demo.jar &
+nohup java -jar examples/ktor/build/libs/kvelte-demo.jar > ~/kvelte.log 2>&1 &

@@ -16,6 +16,7 @@ jobs:
           username: ${{secrets.VPS_USERNAME}}
           port: ${{secrets.VPS_SSH_PORT}}
           script: |
+            sudo rm -rf ./kvelte
             git clone https://github.com/baseballyama/kvelte.git
             cd kvelte
             sh deploy.sh
