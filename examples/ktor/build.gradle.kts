@@ -50,7 +50,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath("tokyo.baseballyama:kvelte:0.0.2")
+        classpath("tokyo.baseballyama:kvelte:0.1.0")
     }
 }
 
