@@ -3,10 +3,11 @@ package tokyo.baseballyama.kvelte.demo.service
 import kotlinx.serialization.Serializable
 import tokyo.baseballyama.kvelte.demo.UserID
 import java.util.*
+import kotlin.math.max
 
 @Serializable
 data class TodoModel(
-    val id: Int,
+    val id: Long,
     val createdAt: Long,
     val text: String,
     val done: Boolean
@@ -33,13 +34,14 @@ object TodoService {
 
     fun create(userID: UserID, model: TodoCreateModel): TodoModel {
         val todos = todoMap[userID] ?: mutableListOf()
-        val newTodo = TodoModel(todos.size + 1, Date().time, model.text, false)
+        val newId = if (todos.isEmpty()) Date().time else max(Date().time, todos[todos.size - 1].id + 1)
+        val newTodo = TodoModel(newId, Date().time, model.text, false)
         todos.add(newTodo)
         todoMap[userID] = todos.toMutableList()
         return newTodo
     }
 
-    fun update(userID: UserID, id: Int, model: TodoUpdateModel) {
+    fun update(userID: UserID, id: Long, model: TodoUpdateModel) {
         val todos = todoMap[userID] ?: return
         val existTodoIndex = todos.indexOfFirst { it.id == id }
         if (existTodoIndex == -1) return
@@ -48,7 +50,7 @@ object TodoService {
         todos[existTodoIndex] = newTodo
     }
 
-    fun delete(userID: UserID, todoID: Int) {
+    fun delete(userID: UserID, todoID: Long) {
         val todos = todoMap[userID] ?: return
         todoMap[userID] = (todos.filter { it.id != todoID }).toMutableList()
     }

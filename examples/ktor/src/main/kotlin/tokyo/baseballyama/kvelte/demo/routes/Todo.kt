@@ -32,7 +32,7 @@ private fun Route.post() {
 private fun Route.put() {
     this.put("/api/todos/{id}") {
         val userSession = call.sessions.get<UserSession>() ?: throw Exception("missing user session")
-        val id = call.parameters["id"]?.toIntOrNull() ?: throw Exception("missing id")
+        val id = call.parameters["id"]?.toLongOrNull() ?: throw Exception("missing id")
         val postData = call.receive<TodoUpdateModel>()
         val todo = TodoService.update(userSession.id, id, postData)
         call.request.call.respond(HttpStatusCode.OK, todo)
@@ -42,7 +42,7 @@ private fun Route.put() {
 private fun Route.delete() {
     this.delete("/api/todos/{id}") {
         val userSession = call.sessions.get<UserSession>() ?: throw Exception("missing user session")
-        val id = call.parameters["id"]?.toIntOrNull() ?: throw Exception("missing id")
+        val id = call.parameters["id"]?.toLongOrNull() ?: throw Exception("missing id")
         TodoService.delete(userSession.id, id)
         call.request.call.respond(HttpStatusCode.NoContent)
     }

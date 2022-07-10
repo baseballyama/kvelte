@@ -19,7 +19,6 @@ internal class TodoServiceTest {
         TodoService.create(userId, TodoCreateModel(text))
         val todos = TodoService.get(userId)
         Assertions.assertEquals(1, todos.size)
-        Assertions.assertEquals(1, todos[0].id)
         Assertions.assertEquals(text, todos[0].text)
         Assertions.assertEquals(false, todos[0].done)
     }
@@ -38,15 +37,12 @@ internal class TodoServiceTest {
 
         val todos1 = TodoService.get(userId1)
         Assertions.assertEquals(2, todos1.size)
-        Assertions.assertEquals(1, todos1[0].id)
         Assertions.assertEquals(text11, todos1[0].text)
         Assertions.assertEquals(false, todos1[0].done)
-        Assertions.assertEquals(2, todos1[1].id)
         Assertions.assertEquals(text12, todos1[1].text)
         Assertions.assertEquals(false, todos1[1].done)
 
         val todos2 = TodoService.get(userId2)
-        Assertions.assertEquals(1, todos2[0].id)
         Assertions.assertEquals(text21, todos2[0].text)
         Assertions.assertEquals(false, todos2[0].done)
     }
@@ -55,21 +51,34 @@ internal class TodoServiceTest {
     fun update() {
         val userId = UserID("1")
         TodoService.create(userId, TodoCreateModel("todo1"))
-        TodoService.update(userId, 1, TodoUpdateModel(text = "updated", done = true))
-        val todos = TodoService.get(userId)
-        Assertions.assertEquals(1, todos.size)
-        Assertions.assertEquals(1, todos[0].id)
-        Assertions.assertEquals("updated", todos[0].text)
-        Assertions.assertEquals(true, todos[0].done)
-
+        val todos1 = TodoService.get(userId)
+        TodoService.update(userId, todos1[0].id, TodoUpdateModel(text = "updated", done = true))
+        val todos2 = TodoService.get(userId)
+        Assertions.assertEquals(1, todos2.size)
+        Assertions.assertEquals("updated", todos2[0].text)
+        Assertions.assertEquals(true, todos2[0].done)
     }
 
     @Test
     fun delete() {
         val userId = UserID("1")
         TodoService.create(userId, TodoCreateModel("todo1"))
-        TodoService.delete(userId, 1)
-        val todos = TodoService.get(userId)
-        Assertions.assertEquals(0, todos.size)
+        val todos1 = TodoService.get(userId)
+        TodoService.delete(userId, todos1[0].id)
+        val todos2 = TodoService.get(userId)
+        Assertions.assertEquals(0, todos2.size)
+    }
+
+    @Test
+    fun `always id should set bigger value`() {
+        val userId = UserID("1")
+        TodoService.create(userId, TodoCreateModel("todo1"))
+        TodoService.create(userId, TodoCreateModel("todo2"))
+        val todos1 = TodoService.get(userId)
+        TodoService.delete(userId, todos1[0].id)
+        TodoService.create(userId, TodoCreateModel("todo3"))
+        val todos2 = TodoService.get(userId)
+        Assertions.assertEquals(2, todos2.size)
+        Assertions.assertEquals(true, todos2[0].id < todos2[1].id)
     }
 }
