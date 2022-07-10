@@ -20,3 +20,12 @@ https://www.npmjs.com/package/kvelte-node
 ```
 npm link kvelte-node --install-links
 ```
+
+---
+### VPS settings
+
+**SSL/TLS certificate**
+https://vpslife.server-memo.net/letsencrypt_nginx/
+
+**nginx operation**
+https://qiita.com/Kaisyou/items/dadf6fe9ee93fb69e76c

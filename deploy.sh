@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -eu
 
 echo "clone kvelte..."
 cd ..
@@ -34,4 +34,4 @@ echo "built kvelte-demo"
 
 echo "start kvelte-demo"
 kill -9 $(lsof -t -i:80)
-java -jar examples/ktor/build/libs/kvelte-demo.jar
+nohup java -jar examples/ktor/build/libs/kvelte-demo.jar &
