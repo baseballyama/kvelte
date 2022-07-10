@@ -1,12 +1,5 @@
 [English README is here](./README.md)
 
-## !!これは開発中のライブラリです。!!
-このライブラリに興味がある人はスターをつけて私をフォローしてください。
-ライブラリをリリースした際にGitHub上で通知を受け取ることができます。
-また、開発状況を知りたい場合は [私のTwitter](https://twitter.com/baseballyama_) をフォローしてください。
-
----
-
 # Kvelte
 
 KotlinユーザーがUIを構築する最速の方法
@@ -22,10 +15,10 @@ KotlinユーザーがUIを構築する最速の方法
 ### 💎 素早くリッチなUIを実現
 Kvelteは、KotlinユーザーがWebアプリケーションを開発する際に、[Svelte](https://svelte.jp/) をテンプレートエンジンとして利用するためのライブラリです。Ktorや Spring Boot といった特定のフレームワークに依存しないので、誰もがすぐにKvelteを使用できます。
 [State of JS 2021](https://2021.stateofjs.com/ja-JP/libraries/front-end-frameworks/) によると、Svelteは現在最も多くの人が興味を持っている最先端のフロントエンドフレームワークです。
-Svelteは、[公式が提供しているチュートリアル](https://svelte.dev/tutorial/basics) を学習することで、初学者でもすぐにリッチなUIを構築できる、という特徴を持っています。
+Svelteは、[公式が提供しているチュートリアル](https://svelte.dev/tutorial/basics) を学習することで、初学者でもすぐにリッチなUIを構築できます。
 
 ### 💡 最小限のネットワーク通信量
-Svelteは本質的にコンパイラです。Svelteファイルは仮想DOMを持たない最小限のJavaScriptにコンパイルされます。また、モジュールバンドラー (Rollup) を使用することにより、未使用のJavaScriptを全て削ぎ落とした最小限のJavaScriptを生成します。これにより、最小限のネットワーク通信量でユーザーにページを配信することができます。
+Svelteはコンパイラです。Svelteファイルは仮想DOMを持たない最小限のJavaScriptにコンパイルされます。また、モジュールバンドラー (Rollup) を使用することにより、未使用のJavaScriptを全て削ぎ落とした最小限のJavaScriptを生成します。これにより、最小限のネットワーク通信量でユーザーにページを配信することができます。
 
 ### 🚀 超高性能レスポンス
 `Kvelte` は、コンパイルしたSvelteファイルを事前にキャッシュしておき、リクエスト時に必要最小限の処理を実行してレスポンスします。これにより、サーバーサイドの超高性能レスポンスを実現しています。
@@ -41,11 +34,112 @@ Svelteは本質的にコンパイラです。Svelteファイルは仮想DOMを�
 
 # デモ
 
-https://user-images.githubusercontent.com/19153718/163550795-43514dc5-898d-4507-b1f8-4bc5676a4d99.mp4
+https://kvelte.baseballyama.tokyo/todos
+
+
+# 前提条件
+
+- Java 11
+- Node.js 14 
+- npm 6
 
 # 使用方法
 
-WIP
+## 新しくKvelteアプリを作成する場合
+
+新しくKvelteアプリを作成する場合、以下の4コマンドを実行するだけです
+
+```shell
+> npx degit baseballyama/kvelte/template kvelte-app
+> cd kvelte-app
+> cd ./src/main/resources/kvelte && npm i && cd ../../../../
+> ./gradlew run
+```
+
+ブラウザで http://localhost にアクセスすると Kvelteアプリが起動します 🎉
+
+## 既存のKotlinアプリにKvelteを組み込む場合
+
+### STEP1 : Install Kvelte-node
+
+```sh
+cd ./src/main/resources
+mkdir kvelte
+cd kvelte
+npx degit baseballyama/kvelte/template/src/main/resources/kvelte
+npm i
+cd ../../../../
+```
+
+### STEP2 : Edit `build.gradle`
+
+```kt
+dependencies {
+  // 1. add deps
+  implementation("tokyo.baseballyama:kvelte:0.1.0")
+}
+
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    // 2. add deps for build script
+    classpath("tokyo.baseballyama:kvelte:0.1.0")
+  }
+}
+
+// 3. create task
+tasks.create("kvelte") {
+  tokyo.baseballyama.kvelte.KvelteBuilder.build(project.projectDir)
+}
+
+// 4. register created task BEFORE build
+tasks.build {
+  this.dependsOn("kvelte")
+}
+```
+
+### STEP3 : Edit Kotlin files
+
+```kt
+routing {
+  // 1. add routes for assets
+  static("assets") { resources("assets") }
+
+  // 2. add routes for kvelte resources
+  get(".kvelte/{...}") {
+    call.response.header("Cache-Control", "public, max-age=86400")
+    call.respondBytes(
+        kvelte.loadJavaScript(call.request.path()),
+        ContentType.Text.JavaScript,
+    )
+  }
+}
+
+// 3. add routes for kvelte paths
+fun Route.get() {
+  get("/") {
+    call.respondText(kvelte.loadPage("index.svelte", mapOf("message" to "Kvelte")), ContentType.Text.Html)
+  }
+}
+```
+
+---
+
+# アーキテクチャ
+
+## Dev
+
+![](/docs/images/dev.jpg)
+
+## Build time
+
+![](/docs/images/build.jpg)
+
+## Prod
+
+![](/docs/images/prod.jpg)
 
 # 他の選択肢との比較
 
