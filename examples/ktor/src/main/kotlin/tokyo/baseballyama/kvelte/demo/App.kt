@@ -28,7 +28,7 @@ val kvelte = Kvelte.create(KvelteConfig(Main::class))
 class Main
 
 fun main() {
-    embeddedServer(Netty, port = 80) {
+    embeddedServer(Netty, port = 8080) {
         install(DoubleReceive)
         install(ContentNegotiation) {
             json()

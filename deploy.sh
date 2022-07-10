@@ -5,7 +5,7 @@ echo "build kvelte-node..."
 cd ./kvelte-node
 npm i
 npm run build
-npm link
+sudo npm link
 cd ..
 echo "built kvelte-node"
 
@@ -26,5 +26,5 @@ cd ../..
 echo "built kvelte-demo"
 
 echo "start kvelte-demo"
-kill -9 $(lsof -t -i:80)
+sudo kill -9 $(lsof -t -i:8080) || echo ''
 nohup java -jar examples/ktor/build/libs/kvelte-demo.jar &

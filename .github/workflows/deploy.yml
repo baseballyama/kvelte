@@ -8,9 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with: 
-          path: kvelte
-      - name: Deploy to VPS
+      - name: Start App
         uses: appleboy/ssh-action@master
         with:
           key: ${{ secrets.VPS_SECRET_KEY }}
@@ -18,6 +16,6 @@ jobs:
           username: ${{secrets.VPS_USERNAME}}
           port: ${{secrets.VPS_SSH_PORT}}
           script: |
-            whoami
+            git clone https://github.com/baseballyama/kvelte.git
             cd kvelte
             sh deploy.sh
