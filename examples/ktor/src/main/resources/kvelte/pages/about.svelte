@@ -24,7 +24,7 @@
       </p>
 
       <pre>
-<span>></span>npx degit baseballyama/kvelte/docs kvelte-app
+<span>></span>npx degit baseballyama/kvelte/template kvelte-app
 <span>></span>cd kvelte-app
 <span>></span>cd ./src/main/resources/kvelte && npm i && cd ../../../../
 <span>></span>./gradlew run
