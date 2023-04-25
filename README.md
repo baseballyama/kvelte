@@ -1,5 +1,7 @@
 [日本語版 README はこちら](./README-ja.md)
 
+# ⚠️ This is PoC project. Now for production.
+
 # Kvelte
 
 KotlinユーザーがUIを構築する最速の方法
