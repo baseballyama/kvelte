@@ -1,6 +1,6 @@
 [日本語版 README はこちら](./README-ja.md)
 
-# ⚠️ This is PoC project. Now for production.
+# ⚠️ This is PoC project. Not for production.
 
 # Kvelte
 
